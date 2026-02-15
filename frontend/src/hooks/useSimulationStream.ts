@@ -66,12 +66,10 @@ export function useSimulationStream({
       socketRef.current = socket;
 
       socket.onopen = () => {
-        console.log("WebSocket connected for simulation:", simulationId);
         onStatusChange("connected");
       };
 
       socket.onmessage = (event) => {
-        console.log("WebSocket message received:", event.data);
         let payload: StreamMessage;
         try {
           payload = JSON.parse(event.data) as StreamMessage;
@@ -79,8 +77,6 @@ export function useSimulationStream({
           console.error("Failed to parse WebSocket message:", event.data);
           return;
         }
-
-        console.log("Parsed payload:", payload);
 
         if (payload.type === "turn" && typeof payload.turn === "number") {
           // Update simulation state after each turn
@@ -136,7 +132,6 @@ export function useSimulationStream({
       };
 
       socket.onclose = (event) => {
-        console.log("WebSocket closed:", event.code, event.reason);
         socketRef.current = null;
         streamModeRef.current = null;
 

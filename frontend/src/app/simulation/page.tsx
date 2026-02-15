@@ -260,12 +260,6 @@ export default function SimulationPage() {
   }, [connectStream, state.displayTurn]);
 
   const playSimulation = () => {
-    console.log("Play button clicked, simulationId:", state.simulationId);
-    console.log("Current state:", {
-      displayTurn: state.displayTurn,
-      simulationState: state.simulationState,
-      streamStatus: state.streamStatus
-    });
     connectStream("play", state.displayTurn + 1);
   };
 
@@ -285,9 +279,7 @@ export default function SimulationPage() {
     }
 
     try {
-      console.log("Saving replay for simulation:", state.simulationId);
       await apiClient.post(`/api/v1/simulation/${state.simulationId}/save-replay`);
-      console.log("Replay saved successfully");
       // Could add a toast notification here if desired
     } catch (error) {
       console.error("Failed to save replay:", error);
