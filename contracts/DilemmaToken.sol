@@ -133,24 +133,18 @@ contract DilemmaToken is ERC20 {
     }
     
     /**
-     * @notice Override transfer to make tokens non-transferable
-     * @dev Tokens represent final political power and should not be transferable
+     * @notice Transfer tokens between agents (only callable by deployer)
+     * @dev Allows the deployer to execute transfers for simulation actions
+     * @param fromAgentId The agent ID sending tokens
+     * @param toAgentId The agent ID receiving tokens
+     * @param amount The amount of tokens to transfer
      */
-    function transfer(address, uint256) public pure override returns (bool) {
-        revert("DILEMMA tokens are non-transferable");
-    }
-    
-    /**
-     * @notice Override transferFrom to make tokens non-transferable
-     */
-    function transferFrom(address, address, uint256) public pure override returns (bool) {
-        revert("DILEMMA tokens are non-transferable");
-    }
-    
-    /**
-     * @notice Override approve to prevent approvals
-     */
-    function approve(address, uint256) public pure override returns (bool) {
-        revert("DILEMMA tokens cannot be approved");
+    function transferBetweenAgents(uint256 fromAgentId, uint256 toAgentId, uint256 amount) external {
+        require(msg.sender == tx.origin, "Only deployer can execute agent transfers");
+        address fromWallet = agentWallets[fromAgentId];
+        address toWallet = agentWallets[toAgentId];
+        require(fromWallet != address(0), "Invalid from agent");
+        require(toWallet != address(0), "Invalid to agent");
+        _transfer(fromWallet, toWallet, amount);
     }
 }
