@@ -5,6 +5,9 @@ import json
 from dataclasses import dataclass, field
 from typing import Any
 
+# Removed import to break circular import
+# from ..services.event_narrator import EventNarrator
+
 
 EXTERNAL_ACTION_LABELS = {
     "ATTACK": "ELIMINATE",
@@ -35,6 +38,9 @@ class EventLogger:
             "rule_justification": rule_justification,
             "details": details or {},
         }
+        # Add human-readable narrative
+        from ..services.event_narrator import EventNarrator
+        entry["narrative"] = EventNarrator.narrate_event(entry)
         self.events.append(entry)
 
     def digest(self) -> str:

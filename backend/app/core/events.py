@@ -10,6 +10,9 @@ from datetime import datetime
 import json
 import logging
 
+# Removed import to break circular import
+# from ..services.event_narrator import EventNarrator
+
 
 @dataclass
 class DomainEvent:
@@ -69,8 +72,23 @@ class ActionExecutedEvent(DomainEvent):
             "target_id": target_id,
             "outcome": outcome,
             "rule_justification": rule_justification,
+            "details": details or {},
+            "narrative": narrative  # Store narrative in data
+        }
+
+        # Generate narrative from event data
+        event_for_narration = {
+            "turn": turn,
+            "actor": actor_id,
+            "action": action_type,
+            "target": target_id,
+            "outcome": outcome,
+            "rule_justification": rule_justification,
             "details": details or {}
         }
+        from ..services.event_narrator import EventNarrator
+        narrative = EventNarrator.narrate_event(event_for_narration)
+
         super().__init__(
             event_type="action_executed",
             timestamp=datetime.now(),
@@ -190,9 +208,26 @@ class EventLogger:
 
     def _log_event(self, event: DomainEvent) -> None:
         """Log a domain event."""
+        # Get narrative from data dict if available
+        narrative = event.data.get('narrative', '')
+
+        if not narrative:
+            # Fallback: try to generate narrative from event data
+            event_data = {
+                "turn": getattr(event, 'turn', event.data.get('turn', 0)),
+                "actor": getattr(event, 'actor_id', getattr(event, 'agent_id', event.data.get('actor_id', -1))),
+                "action": getattr(event, 'action_type', getattr(event, 'event_type', event.data.get('action_type', 'unknown'))),
+                "target": getattr(event, 'target_id', event.data.get('target_id')),
+                "outcome": getattr(event, 'outcome', getattr(event, 'cause', event.data.get('outcome', 'unknown'))),
+                "rule_justification": getattr(event, 'rule_justification', event.data.get('rule_justification', '')),
+                "details": event.data.get('details', event.data)
+            }
+            from ..services.event_narrator import EventNarrator
+            narrative = EventNarrator.narrate_event(event_data)
+
         self.logger.info(
             f"Event: {event.event_type} | ID: {event.event_id} | "
-            f"Time: {event.timestamp.isoformat()} | Data: {json.dumps(event.data, default=str)}"
+            f"Time: {event.timestamp.isoformat()} | Narrative: {narrative} | Data: {json.dumps(event.data, default=str)}"
         )
 
 
