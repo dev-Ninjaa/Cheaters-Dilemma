@@ -14,9 +14,11 @@ class AgentObservation:
     self_token_balance: int
     self_strength: int
     self_rank: int
+    self_health: int
     alive_ids: tuple[int, ...]
     token_balance_by_agent: dict[int, int]
     strength_by_agent: dict[int, int]
+    health_by_agent: dict[int, int]
     trust_by_agent: dict[int, float]
     aggression_by_agent: dict[int, float]
     current_rules: dict[str, Any]

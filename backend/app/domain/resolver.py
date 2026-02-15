@@ -68,6 +68,7 @@ class ConflictResolver:
         strength: dict[int, int],
         alive: set[int],
         health: dict[int, int],
+        kills: dict[int, int],
         rng: Random,
     ) -> dict[str, object]:
         cost = int(self.rules.values.get("attack_cost", 5))
@@ -91,6 +92,7 @@ class ConflictResolver:
             eliminated = health[target] <= 0
             if eliminated and target in alive:
                 alive.remove(target)
+                kills[actor] = kills.get(actor, 0) + 1  # Increment kills
                 loot_ratio = float(self.rules.values.get("attack_loot_ratio", 0.4))
                 loot = int(token_balances[target] * loot_ratio)
                 token_balances[target] -= loot
@@ -111,6 +113,7 @@ class ConflictResolver:
         strength: dict[int, int],
         alive: set[int],
         health: dict[int, int],
+        kills: dict[int, int],
         rng: Random,
     ) -> dict[str, object]:
         """Resolve coalition attack - multiple agents attacking together."""
@@ -142,6 +145,9 @@ class ConflictResolver:
             eliminated = health[target] <= 0
             if eliminated and target in alive:
                 alive.remove(target)
+                # Each actor gets a kill
+                for actor in actors:
+                    kills[actor] = kills.get(actor, 0) + 1
                 loot_ratio = float(self.rules.values.get("attack_loot_ratio", 0.4))
                 loot = int(token_balances[target] * loot_ratio)
                 token_balances[target] -= loot

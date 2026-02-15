@@ -8,6 +8,10 @@ class WarlordAgent(Agent):
     name = "warlord"
 
     def decide(self, obs: AgentObservation, rng) -> Action:
+        # Health management - REST if health is low
+        if obs.self_health < 20 and rng.random() < 0.7:
+            return Action(actor=obs.self_id, kind=ActionType.REST)
+
         if obs.pending_proposal is not None:
             key = obs.pending_proposal.get("key")
             if key in {"attack_cost", "attack_success_base"}:
@@ -21,11 +25,13 @@ class WarlordAgent(Agent):
 
         late_game = len(obs.alive_ids) <= max(3, len(obs.token_balance_by_agent) // 3)
         if late_game and obs.self_token_balance >= obs.current_rules.get("attack_cost", 5) and rng.random() < 0.55:
-            target = min(others, key=lambda aid: obs.strength_by_agent[aid] + obs.token_balance_by_agent[aid])
+            # Target weakest agent (considering health)
+            target = min(others, key=lambda aid: obs.strength_by_agent[aid] + obs.token_balance_by_agent[aid] - obs.health_by_agent[aid])
             return Action(actor=obs.self_id, kind=ActionType.ATTACK, target=target)
 
         if obs.self_token_balance >= obs.current_rules.get("attack_cost", 5) * 2 and rng.random() < 0.04:
-            target = min(others, key=lambda aid: obs.strength_by_agent[aid])
+            # Target low health agents
+            target = min(others, key=lambda aid: obs.health_by_agent[aid])
             return Action(actor=obs.self_id, kind=ActionType.ATTACK, target=target)
 
         if rng.random() < 0.1:

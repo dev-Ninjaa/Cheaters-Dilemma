@@ -59,6 +59,7 @@ class World:
 
         # New features (only if enabled)
         self.health: dict[int, int] = {slot.agent_id: 50 for slot in self.agent_slots}
+        self.kills: dict[int, int] = {slot.agent_id: 0 for slot in self.agent_slots}
         self.positions: dict[int, tuple] = {slot.agent_id: (0, 0) for slot in self.agent_slots}
         self.alliances: list = []  # List of Alliance objects
         self.alliance_proposals: dict[int, list] = {}  # Pending alliance proposals
@@ -124,9 +125,11 @@ class World:
             self_token_balance=self.token_balances[aid],
             self_strength=self.strength[aid],
             self_rank=self._rank_of(aid),
+            self_health=self.health.get(aid, 50),
             alive_ids=alive_ids,
             token_balance_by_agent={i: self.token_balances[i] for i in alive_ids},
             strength_by_agent={i: self.strength[i] for i in alive_ids},
+            health_by_agent={i: self.health.get(i, 50) for i in alive_ids},
             trust_by_agent={i: self.reputation.trust[i] for i in alive_ids},
             aggression_by_agent={i: self.reputation.aggression[i] for i in alive_ids},
             current_rules=dict(self.rule_set.values),
@@ -278,6 +281,7 @@ class World:
                     self.strength,
                     self.alive,
                     self.health,
+                    self.kills,
                     self.rng,
                 )
                 status = "success" if result["success"] else "failed"
@@ -313,6 +317,7 @@ class World:
                     strength=self.strength,
                     alive=self.alive,
                     health=self.health if self.enable_new_features else {},
+                    kills=self.kills,
                     rng=self.rng,
                 )
                 self.reputation.record_attack(actor, int(action.target), bool(result["success"]))
@@ -358,15 +363,17 @@ class World:
                 {
                     "agent_id": slot.agent_id,
                     "strategy": slot.label,
-                    "token_balance": self.token_balances[slot.agent_id],
+                    "resources": self.token_balances[slot.agent_id],  # Use resources for frontend display
                     "strength": self.strength[slot.agent_id],
                     "alive": slot.agent_id in self.alive,
                     "trust": round(self.reputation.trust[slot.agent_id], 4),
                     "aggression": round(self.reputation.aggression[slot.agent_id], 4),
+                    "health": self.health.get(slot.agent_id, 50),
+                    "kills": self.kills.get(slot.agent_id, 0),
                 }
                 for slot in self.agent_slots
             ),
-            key=lambda row: (-row["token_balance"], row["agent_id"]),
+            key=lambda row: (-row["resources"], row["agent_id"]),  # Sort by resources instead of token_balance
         )
 
         return {

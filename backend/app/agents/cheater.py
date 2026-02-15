@@ -8,6 +8,10 @@ class CheaterAgent(Agent):
     name = "cheater"
 
     def decide(self, obs: AgentObservation, rng) -> Action:
+        # Health management - REST if health is low
+        if obs.self_health < 25 and rng.random() < 0.4:
+            return Action(actor=obs.self_id, kind=ActionType.REST)
+
         if obs.pending_proposal is not None:
             key = obs.pending_proposal.get("key")
             if key in {"steal_amount", "steal_success_base"}:

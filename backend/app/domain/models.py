@@ -38,6 +38,7 @@ class Agent:
     # New attributes
     health: int = 50  # Default health
     max_health: int = 50
+    kills: int = 0  # Number of agents killed
     position: tuple = (0, 0)  # (x, y) coordinates
     alliances: List[int] = None  # List of allied agent IDs
 
