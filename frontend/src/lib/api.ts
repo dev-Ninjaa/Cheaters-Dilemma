@@ -88,6 +88,14 @@ class ApiClient {
   async getReplayDetail(replayId: string): Promise<ReplayDetail> {
     return this.request<ReplayDetail>(`/replays/${replayId}`);
   }
+
+  // Generic HTTP methods
+  async post<T = any>(endpoint: string, data?: any): Promise<T> {
+    return this.request<T>(endpoint, {
+      method: 'POST',
+      body: data ? JSON.stringify(data) : undefined,
+    });
+  }
 }
 
 export const apiClient = new ApiClient();

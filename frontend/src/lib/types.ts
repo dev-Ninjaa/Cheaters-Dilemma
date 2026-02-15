@@ -5,12 +5,14 @@ import { ReactNode } from 'react';
 export interface AgentSummary {
   agent_id: number;
   strategy: string;
-  resources: number;
+  resources: number; // Keep for backward compatibility, maps to token_balance
   strength: number;
   alive: boolean;
   trust: number;
   aggression: number;
   rank?: number;
+  health: number;
+  kills: number;
 }
 
 export interface AgentDetail extends AgentSummary {
@@ -51,12 +53,20 @@ export interface SimulationEvent {
   outcome: string;
   rule_justification: string;
   details: EventDetails;
+  narrative?: string;  // Human-readable description
 }
 
 export interface SimulationEvents {
   simulation_id: string;
   events: SimulationEvent[];
   total_events: number;
+}
+
+export interface SimulationNarratives {
+  simulation_id: string;
+  narratives: string[];
+  total_narratives: number;
+  since_turn: number;
 }
 
 export interface SimulationSummary {
@@ -161,6 +171,7 @@ export interface AgentCardProps {
 export interface EventLogEntry {
   turn: number;
   message: string;
+  narrative?: string;
   type?: string;
   action?: string;
   actor?: number;
