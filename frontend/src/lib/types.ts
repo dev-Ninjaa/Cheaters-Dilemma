@@ -11,8 +11,8 @@ export interface AgentSummary {
   trust: number;
   aggression: number;
   rank?: number;
-  health: number;
-  kills: number;
+  health?: number;
+  kills?: number;
 }
 
 export interface AgentDetail extends AgentSummary {
@@ -161,6 +161,9 @@ export interface Agent {
   trust?: number;
   aggression?: number;
   alive?: boolean;
+  rank?: number;
+  health?: number;
+  kills?: number;
 }
 
 export interface AgentCardProps {
