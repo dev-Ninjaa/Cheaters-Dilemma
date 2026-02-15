@@ -7,7 +7,8 @@ class ApiClient {
   private baseUrl: string;
 
   constructor(baseUrl: string = API_BASE_URL) {
-    this.baseUrl = baseUrl;
+    // Normalize trailing slash to avoid double-slash paths like /api/v1//simulation/start
+    this.baseUrl = baseUrl.replace(/\/+$/, '');
   }
 
   private async request<T>(
