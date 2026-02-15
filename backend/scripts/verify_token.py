@@ -20,7 +20,7 @@ load_dotenv()
 class TokenVerifier:
     """Verify the deployed DILEMMA token contract."""
 
-    def __init__(self, use_testnet: bool = None, contract_address: str = None):
+    def __init__(self, use_testnet: bool = None, contract_address: str = None, simulation_file: str = None):
         # Configuration: Use environment variable or parameter
         if use_testnet is None:
             use_testnet = os.getenv('USE_TESTNET', 'false').lower() == 'true'
@@ -43,6 +43,7 @@ class TokenVerifier:
                 contract_address = ""
 
         self.contract_address = contract_address or ""
+        self.simulation_file = simulation_file or "simulation_with_new_features_seed42.json"
 
         # Connect to network
         self.w3 = Web3(Web3.HTTPProvider(self.rpc_url))
@@ -66,7 +67,7 @@ class TokenVerifier:
     def get_simulation_hash(self) -> bytes:
         """Compute the expected simulation hash."""
         # Load simulation results
-        simulation_file = Path(__file__).parent.parent / "data" / "simulation_results_demo_seed42.json"
+        simulation_file = Path(__file__).parent.parent / "data" / "simulation_with_new_features_seed42.json"
         if not simulation_file.exists():
             raise FileNotFoundError(f"Simulation results not found: {simulation_file}")
 
@@ -177,60 +178,70 @@ class TokenVerifier:
 
         # Check agent wallets and balances
         print(f"\n👛 Agent Wallets & Balances:")
-        expected_balances_tokens = {
-            0: 43, 1: 191, 2: 249, 3: 176, 4: 244, 5: 13, 6: 246, 7: 224
-        }
-
+        
+        # Load simulation data dynamically
+        simulation_file = Path(__file__).parent.parent / "data" / self.simulation_file
+        with open(simulation_file, 'r') as f:
+            sim_data = json.load(f)
+        
+        leaderboard = sim_data.get("leaderboard", [])
+        expected_total_tokens = sum(agent["resources"] for agent in leaderboard)
+        
         total_verified = 0
         total_balance = 0
-        for agent_id in range(8):
+        for i, agent in enumerate(leaderboard):
             try:
-                wallet = contract.functions.getAgentWallet(agent_id).call()
-                balance_wei = contract.functions.balanceOf(wallet).call()
-                stored_agent_id = contract.functions.getAgentId(wallet).call()
+                expected_agent_id = agent["agent_id"]
+                expected_balance_tokens = agent["resources"]
 
-                expected_balance_tokens = expected_balances_tokens.get(agent_id, 0)
+                # Get data from contract using agent ID as key
+                wallet = contract.functions.agentWallets(expected_agent_id).call()
+                balance_wei = contract.functions.balanceOf(wallet).call()
+                stored_agent_id = contract.functions.walletToAgent(wallet).call()
+
+                # Generate expected wallet for comparison
+                from scripts.wallet_generator import WalletGenerator
+                expected_wallet, _ = WalletGenerator.generate_agent_wallet(expected_agent_id, sim_data.get("seed", 42))
+
                 expected_balance_wei = expected_balance_tokens * (10 ** decimals)
                 balance_ok = balance_wei == expected_balance_wei
-                agent_ok = stored_agent_id == agent_id
+                wallet_ok = wallet.lower() == expected_wallet.lower()
+                agent_id_ok = stored_agent_id == expected_agent_id
 
-                status = "✅" if (balance_ok and agent_ok) else "❌"
+                status = "✅" if (balance_ok and wallet_ok and agent_id_ok) else "❌"
                 balance_formatted = balance_wei / (10 ** decimals)
-                print(f"   {status} Agent {agent_id}: {balance_formatted:,.0f}/{expected_balance_tokens} DLM (wei: {balance_wei}/{expected_balance_wei})")
-                print(f"      Wallet: {wallet}")
-                print(f"      Agent ID match: {agent_ok}")
 
-                if balance_ok and agent_ok:
+                print(f"   {status} Agent {i} (ID: {expected_agent_id}): {balance_formatted:,.0f}/{expected_balance_tokens} DLM")
+                print(f"      Contract Wallet: {wallet}")
+                print(f"      Expected Wallet:  {expected_wallet}")
+                print(f"      Wallet Match: {wallet_ok} | Agent ID Match: {agent_id_ok}")
+
+                if balance_ok and wallet_ok and agent_id_ok:
                     total_verified += 1
-                total_balance += balance_wei
+                total_balance += balance_formatted
+
+                print()
 
             except Exception as e:
-                print(f"   ❌ Error checking Agent {agent_id}: {e}")
-                # Try to call balanceOf directly
-                try:
-                    wallet = contract.functions.getAgentWallet(agent_id).call()
-                    print(f"      Wallet for agent {agent_id}: {wallet}")
-                    balance_raw = contract.functions.balanceOf(wallet).call()
-                    print(f"      Raw balanceOf result: {balance_raw}")
-                except Exception as e2:
-                    print(f"      Raw balanceOf also failed: {e2}")
+                print(f"   ❌ Error checking agent {i}: {e}")
+                print()
 
         # Verify total supply
-        expected_total_tokens = sum(expected_balances_tokens.values())
         expected_total_wei = expected_total_tokens * (10 ** decimals)
-        supply_match = total_balance == total_supply and total_supply == expected_total_wei
+        total_supply_tokens = total_supply / (10 ** decimals)
+        supply_match = total_balance == total_supply_tokens and total_supply_tokens == expected_total_tokens
         print(f"\n💰 Balance Verification:")
-        print(f"   Total Balance Sum: {total_balance / (10 ** decimals):,.0f} DLM")
-        print(f"   Total Supply: {total_supply / (10 ** decimals):,.0f} DLM")
+        print(f"   Total Balance Sum: {total_balance:,.0f} DLM")
+        print(f"   Total Supply: {total_supply_tokens:,.0f} DLM")
         print(f"   Expected Total: {expected_total_tokens:,.0f} DLM")
         print(f"   ✅ Supply Match: {supply_match}")
 
         print(f"\n📊 Verification Summary:")
-        print(f"   ✅ Agents verified: {total_verified}/8")
+        print(f"   ✅ Agents verified: {total_verified}/{len(leaderboard)}")
         print(f"   ✅ Contract deployed: {self.w3.eth.get_code(self.contract_address).hex() != '0x'}")
         print(f"   ✅ Hash verified: {simulation_hash == expected_hash}")
 
-        success = total_verified == 8 and supply_match and simulation_hash == expected_hash
+        success = total_verified == len(leaderboard) and supply_match and simulation_hash == expected_hash
         print(f"\n🎯 Final Result: {'✅ VERIFICATION SUCCESSFUL' if success else '❌ VERIFICATION FAILED'}")
 
         return success
@@ -244,6 +255,7 @@ def main():
     parser.add_argument('--testnet', action='store_true', help='Verify on testnet')
     parser.add_argument('--mainnet', action='store_true', help='Verify on mainnet (default)')
     parser.add_argument('--contract', help='Contract address to verify (overrides default)')
+    parser.add_argument('--simulation', help='Simulation data file to verify against (default: simulation_with_new_features_seed42.json)')
 
     args = parser.parse_args()
 
@@ -251,7 +263,7 @@ def main():
     use_testnet = args.testnet or (not args.mainnet and os.getenv('USE_TESTNET', 'false').lower() == 'true')
 
     try:
-        verifier = TokenVerifier(use_testnet=use_testnet, contract_address=args.contract)
+        verifier = TokenVerifier(use_testnet=use_testnet, contract_address=args.contract, simulation_file=args.simulation)
 
         print(f"🔍 Verifying DILEMMA Token Contract on {verifier.network_name}")
         print(f"🏠 Contract Address: {verifier.contract_address}")

@@ -1,130 +1,132 @@
-PS E:\Codebase\Hackathon\Cheaters-Dilemma\backend> uv run python scripts/manual_deploy_token.py data/simulation_results_demo_seed42.json
+PS E:\Codebase\Hackathon\Cheaters-Dilemma\backend> uv run scripts/manual_deploy_token.py data/simulation_with_new_features_seed42.json
 🚀 Starting Manual DILEMMA Token Deployment
 ==================================================
-✅ Connected to Monad testnet
+🌐 Network: Mainnet
+✅ Connected to Monad Mainnet
 ✅ Deployer address: 0xE2ca347D197F21D1E28f40F5Cc1e5468FCB227C4
-💰 Deployer balance: 9.345159388 MON
-📂 Loading simulation results from: data/simulation_results_demo_seed42.json
+💰 Deployer balance: 37.619267809931 MON
+📂 Loading simulation results from: data/simulation_with_new_features_seed42.json
 ✅ Simulation results loaded
-🔐 Simulation hash: 0xf0932544f4d3f8cacb940fc5db9acfa3518bbded92f5063aca7a2c10132df61c
-👥 Agent count: 8
-💰 Total supply: 1386 DLM
+🔐 Simulation hash: 0xbd7f2cf55962a92623691eeab845f062e3b711fdb8829c03ac8b4749eda5f651
+👥 Agent count: 6
+💰 Total supply: 671 DLM
 
 👛 Generated agent wallets:
-   Agent 2: 0x21dC627D1c9602607FD4dc0612D2f46cAA3A28f9 → 249 DLM
-   Agent 6: 0xe5a743aA2695680081007DE3Cf95748940F199aA → 246 DLM
-   Agent 4: 0xAaa836974643bf4408BFfE421B68bbF5f022283D → 244 DLM
-   Agent 7: 0xfcdf24729cC09448872B923DFeAE70D63Da2feC7 → 224 DLM
-   Agent 1: 0x17d3B19eD5dCD3eAC4cE5f438fEf0D00348Ed8f7 → 191 DLM
-   Agent 3: 0xC292F856440225E32b4533fe00cBB0e41Aa2F9cd → 176 DLM
-   Agent 0: 0xb017B8eA4C368Dc867383C0DCfCC63c07c12bC67 → 43 DLM
-   Agent 5: 0xbfAf538D2641262d796c55EB716f48b329706A20 → 13 DLM
+   Agent 2: 0x21dC627D1c9602607FD4dc0612D2f46cAA3A28f9 → 137 DLM
+   Agent 3: 0xC292F856440225E32b4533fe00cBB0e41Aa2F9cd → 134 DLM
+   Agent 0: 0xb017B8eA4C368Dc867383C0DCfCC63c07c12bC67 → 131 DLM
+   Agent 4: 0xAaa836974643bf4408BFfE421B68bbF5f022283D → 128 DLM
+   Agent 5: 0xbfAf538D2641262d796c55EB716f48b329706A20 → 90 DLM
+   Agent 1: 0x17d3B19eD5dCD3eAC4cE5f438fEf0D00348Ed8f7 → 51 DLM
+
 📝 Preparing contract deployment...
 📝 Compiling contract: E:\Codebase\Hackathon\Cheaters-Dilemma\contracts\DilemmaToken.sol
-Using contract: <stdin>:DilemmaToken
-Contract interface keys: dict_keys(['abi', 'bin'])
-ABI length: 28
 ✅ Contract compiled successfully
-⛽ Estimated gas: 1707911
+⛽ Estimated gas: 1985480
 💰 Gas price: 102 gwei
 🚀 Sending deployment transaction...
-📋 Transaction hash: 0xfb1c99ddbb14114923499aca5159aa22e3cce7524a15456d424a0517ae98d8d6
-⏳ Waiting for confirmation...
+📋 Transaction hash: 0x41ea0ba8c9afb8c827b82ed84d334431994a2bc354ff45df62f7386a60f3abd4
 ✅ Contract deployed successfully!
-🏠 Contract address: 0xB572DD3dEc45240Ede10D67082A6560106568E16
+🏠 Contract address: 0x31E22d9ea1CE639dc4959d5AfC7F8b20bBA0e9f4
 
 🔍 Verifying deployment...
-🔗 Explorer: https://testnet.monadscan.com/address/0xB572DD3dEc45240Ede10D67082A6560106568E16
-🔗 Transaction: https://testnet.monadscan.com/tx/0xfb1c99ddbb14114923499aca5159aa22e3cce7524a15456d424a0517ae98d8d6
+🔗 Explorer: https://monadscan.com/address/0x31E22d9ea1CE639dc4959d5AfC7F8b20bBA0e9f4
+🔗 Transaction: https://monadscan.com/tx/0x41ea0ba8c9afb8c827b82ed84d334431994a2bc354ff45df62f7386a60f3abd4
 📝 Compiling contract: E:\Codebase\Hackathon\Cheaters-Dilemma\contracts\DilemmaToken.sol
-Using contract: <stdin>:DilemmaToken
-Contract interface keys: dict_keys(['abi', 'bin'])
-ABI length: 28
 ✅ Contract compiled successfully
 
 📋 Verification results:
-   ✅ Simulation hash: b'\xf0\x93%D\xf4\xd3\xf8\xca\xcb\x94\x0f\xc5\xdb\x9a\xcf\xa3Q\x8b\xbd\xed\x92\xf5\x06:\xcaz,\x10\x13-\xf6\x1c'    
-   ✅ Agent count: 8
-   ✅ Total supply: 1386000000000000000000
+   ✅ Simulation hash: matches
+   ✅ Agent count: 6
+   ✅ Total supply: 671 DLM
 
 👛 Token distribution verification:
-   ✅ Agent 2: 249/249 DLM, wallet: 0x21dC627D...
-   ✅ Agent 6: 246/246 DLM, wallet: 0xe5a743aA...
-   ✅ Agent 4: 244/244 DLM, wallet: 0xAaa83697...
-   ✅ Agent 7: 224/224 DLM, wallet: 0xfcdf2472...
-   ✅ Agent 1: 191/191 DLM, wallet: 0x17d3B19e...
-   ✅ Agent 3: 176/176 DLM, wallet: 0xC292F856...
-   ✅ Agent 0: 43/43 DLM, wallet: 0xb017B8eA...
-   ✅ Agent 5: 13/13 DLM, wallet: 0xbfAf538D...
+   ✅ Agent 2: 137/137 DLM, wallet: 0x21dC627D...
+   ✅ Agent 3: 134/134 DLM, wallet: 0xC292F856...
+   ✅ Agent 0: 131/131 DLM, wallet: 0xb017B8eA...
+   ✅ Agent 4: 128/128 DLM, wallet: 0xAaa83697...
+   ✅ Agent 5: 90/90 DLM, wallet: 0xbfAf538D...
+   ✅ Agent 1: 51/51 DLM, wallet: 0x17d3B19e...
+   ✅ All 6 agents verified successfully
 
 🎉 DEPLOYMENT COMPLETE!
 ==================================================
-✅ Contract: 0xB572DD3dEc45240Ede10D67082A6560106568E16
-✅ Network: Monad Testnet
+✅ Contract: 0x31E22d9ea1CE639dc4959d5AfC7F8b20bBA0e9f4
+✅ Network: Monad Mainnet
 ✅ Token: DILEMMA (DLM)
-✅ Supply: 1386 tokens
-🔗 Explorer: https://testnet.monadscan.com/address/0xB572DD3dEc45240Ede10D67082A6560106568E16
+✅ Supply: 671 tokens
+🔗 Explorer: https://monadscan.com/address/0x31E22d9ea1CE639dc4959d5AfC7F8b20bBA0e9f4
+PS E:\Codebase\Hackathon\Cheaters-Dilemma\backend>                       
 
 
 
 
 ---------------------------------------------------
-PS E:\Codebase\Hackathon\Cheaters-Dilemma\backend> uv run python scripts/verify_token.py
+PS E:\Codebase\Hackathon\Cheaters-Dilemma\backend> uv run scripts/verify_token.py --mainnet --contract 0x31E22d9ea1CE639dc4959d5AfC7F8b20bBA0e9f4 --simulation simulation_with_new_features_seed42.json
+🔍 Verifying DILEMMA Token Contract on Monad Mainnet
+🏠 Contract Address: 0x31E22d9ea1CE639dc4959d5AfC7F8b20bBA0e9f4
+🔗 Explorer: https://monadscan.com/address/0x31E22d9ea1CE639dc4959d5AfC7F8b20bBA0e9f4
+==================================================
 Contract has code: True
-Code length: 3551 bytes
+Code length: 5683 bytes
 
 🔍 Verifying DILEMMA Token Contract
-🏠 Contract Address: 0xB572DD3dEc45240Ede10D67082A6560106568E16
-🔗 Explorer: https://testnet.monadscan.com/address/0xB572DD3dEc45240Ede10D67082A6560106568E16
+🏠 Contract Address: 0x31E22d9ea1CE639dc4959d5AfC7F8b20bBA0e9f4
+🔗 Explorer: https://monadscan.com/address/0x31E22d9ea1CE639dc4959d5AfC7F8b20bBA0e9f4
 📝 Compiling contract for verification: E:\Codebase\Hackathon\Cheaters-Dilemma\contracts\DilemmaToken.sol
-✅ Contract compiled successfully - ABI has 28 functions
-📋 ABI loaded with 28 functions
-📋 Available functions: ['agentCount', 'agentWallets', 'allowance', 'approve', 'balanceOf', 'decimals', 'deploymentTimestamp', 'getAgentId', 'getAgentWallet', 'getDeploymentInfo', 'name', 'simulationHash', 'symbol', 'totalSupply', 'transfer', 'transferFrom', 'verifySimulationHash', 'walletToAgent']
+✅ Contract compiled successfully - ABI has 29 functions
+📋 ABI loaded with 29 functions
    📛 Name: DILEMMA
    🏷️  Symbol: DLM
    🔢 Decimals: 18 (raw value)
-   💰 Total Supply: 1,386 DLM (raw: 1386000000000000000000)
+   💰 Total Supply: 671 DLM (raw: 671000000000000000000)
 
 🎯 Simulation Data:
-   🔐 Simulation Hash: 0xf0932544f4d3f8cacb940fc5db9acfa3518bbded92f5063aca7a2c10132df61c
-   🔐 Expected Hash: 0xf0932544f4d3f8cacb940fc5db9acfa3518bbded92f5063aca7a2c10132df61c
+   🔐 Simulation Hash: 0xbd7f2cf55962a92623691eeab845f062e3b711fdb8829c03ac8b4749eda5f651        
+   🔐 Expected Hash: 0xbd7f2cf55962a92623691eeab845f062e3b711fdb8829c03ac8b4749eda5f651
    ✅ Hash Match: True
-   👥 Agent Count: 8
+   👥 Agent Count: 6
 
 👛 Agent Wallets & Balances:
-   ✅ Agent 0: 43/43 DLM (wei: 43000000000000000000/43000000000000000000)
-      Wallet: 0xb017B8eA4C368Dc867383C0DCfCC63c07c12bC67
-      Agent ID match: True
-   ✅ Agent 1: 191/191 DLM (wei: 191000000000000000000/191000000000000000000)
-      Wallet: 0x17d3B19eD5dCD3eAC4cE5f438fEf0D00348Ed8f7
-      Agent ID match: True
-   ✅ Agent 2: 249/249 DLM (wei: 249000000000000000000/249000000000000000000)
-      Wallet: 0x21dC627D1c9602607FD4dc0612D2f46cAA3A28f9
-      Agent ID match: True
-   ✅ Agent 3: 176/176 DLM (wei: 176000000000000000000/176000000000000000000)
-      Wallet: 0xC292F856440225E32b4533fe00cBB0e41Aa2F9cd
-      Agent ID match: True
-   ✅ Agent 4: 244/244 DLM (wei: 244000000000000000000/244000000000000000000)
-      Wallet: 0xAaa836974643bf4408BFfE421B68bbF5f022283D
-      Agent ID match: True
-   ✅ Agent 5: 13/13 DLM (wei: 13000000000000000000/13000000000000000000)
-      Wallet: 0xbfAf538D2641262d796c55EB716f48b329706A20
-      Agent ID match: True
-   ✅ Agent 6: 246/246 DLM (wei: 246000000000000000000/246000000000000000000)
-      Wallet: 0xe5a743aA2695680081007DE3Cf95748940F199aA
-      Agent ID match: True
-   ✅ Agent 7: 224/224 DLM (wei: 224000000000000000000/224000000000000000000)
-      Wallet: 0xfcdf24729cC09448872B923DFeAE70D63Da2feC7
-      Agent ID match: True
+   ✅ Agent 0 (ID: 2): 137/137 DLM
+      Contract Wallet: 0x21dC627D1c9602607FD4dc0612D2f46cAA3A28f9
+      Expected Wallet:  0x21dC627D1c9602607FD4dc0612D2f46cAA3A28f9
+      Wallet Match: True | Agent ID Match: True
+
+   ✅ Agent 1 (ID: 3): 134/134 DLM
+      Contract Wallet: 0xC292F856440225E32b4533fe00cBB0e41Aa2F9cd
+      Expected Wallet:  0xC292F856440225E32b4533fe00cBB0e41Aa2F9cd
+      Wallet Match: True | Agent ID Match: True
+
+   ✅ Agent 2 (ID: 0): 131/131 DLM
+      Contract Wallet: 0xb017B8eA4C368Dc867383C0DCfCC63c07c12bC67
+      Expected Wallet:  0xb017B8eA4C368Dc867383C0DCfCC63c07c12bC67
+      Wallet Match: True | Agent ID Match: True
+
+   ✅ Agent 3 (ID: 4): 128/128 DLM
+      Contract Wallet: 0xAaa836974643bf4408BFfE421B68bbF5f022283D
+      Expected Wallet:  0xAaa836974643bf4408BFfE421B68bbF5f022283D
+      Wallet Match: True | Agent ID Match: True
+
+   ✅ Agent 4 (ID: 5): 90/90 DLM
+      Contract Wallet: 0xbfAf538D2641262d796c55EB716f48b329706A20
+      Expected Wallet:  0xbfAf538D2641262d796c55EB716f48b329706A20
+      Wallet Match: True | Agent ID Match: True
+
+   ✅ Agent 5 (ID: 1): 51/51 DLM
+      Contract Wallet: 0x17d3B19eD5dCD3eAC4cE5f438fEf0D00348Ed8f7
+      Expected Wallet:  0x17d3B19eD5dCD3eAC4cE5f438fEf0D00348Ed8f7
+      Wallet Match: True | Agent ID Match: True
+
 
 💰 Balance Verification:
-   Total Balance Sum: 1,386 DLM
-   Total Supply: 1,386 DLM
-   Expected Total: 1,386 DLM
+   Total Balance Sum: 671 DLM
+   Total Supply: 671 DLM
+   Expected Total: 671 DLM
    ✅ Supply Match: True
 
 📊 Verification Summary:
-   ✅ Agents verified: 8/8
+   ✅ Agents verified: 6/6
    ✅ Contract deployed: True
    ✅ Hash verified: True
 
@@ -133,4 +135,3 @@ Code length: 3551 bytes
 🎉 The DILEMMA token contract is successfully deployed and verified!
    All agent wallets have the correct token balances.
    The simulation results are permanently encoded on-chain.
-PS E:\Codebase\Hackathon\Cheaters-Dilemma\backend>

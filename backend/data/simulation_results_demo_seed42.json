@@ -22739,7 +22739,12 @@
         },
         "narrative": "Turn 200: Agent 7 worked and earned 3 tokens"
       }
-    ]
+    ],
+    "blockchain_transfers": {
+      "executed": 175,
+      "failed": 38,
+      "total_transfers": 213
+    }
   },
   "summary": {
     "leaderboard_lines": [
