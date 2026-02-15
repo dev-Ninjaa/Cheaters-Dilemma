@@ -66,6 +66,7 @@ export function FinalResults({
           >
             ACTION SUMMARY
           </div>
+
           <div className="grid grid-cols-2 gap-2">
             {Object.entries(simulationSummary.action_counts).map(
               ([action, count]) => (
@@ -81,6 +82,29 @@ export function FinalResults({
               ),
             )}
           </div>
+
+          {/* On-chain transfer summary (if available) */}
+          {simulationSummary.blockchain_transfers && (
+            <div className="mt-3">
+              <div className={`text-yellow-500 mb-2 ${compact ? "text-xs" : "text-sm"}`}>
+                ON-CHAIN TRANSFERS
+              </div>
+              <div className="flex gap-2">
+                <div className="flex-1 bg-slate-900 border border-slate-700 p-2 rounded-sm text-center">
+                  <div className="text-slate-400 text-xs">Executed</div>
+                  <div className="text-green-400 font-mono">{simulationSummary.blockchain_transfers.executed}</div>
+                </div>
+                <div className="flex-1 bg-slate-900 border border-slate-700 p-2 rounded-sm text-center">
+                  <div className="text-slate-400 text-xs">Failed</div>
+                  <div className="text-red-400 font-mono">{simulationSummary.blockchain_transfers.failed}</div>
+                </div>
+                <div className="flex-1 bg-slate-900 border border-slate-700 p-2 rounded-sm text-center">
+                  <div className="text-slate-400 text-xs">Total</div>
+                  <div className="text-slate-300 font-mono">{simulationSummary.blockchain_transfers.total_transfers}</div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>

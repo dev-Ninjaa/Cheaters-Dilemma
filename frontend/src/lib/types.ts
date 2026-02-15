@@ -69,6 +69,12 @@ export interface SimulationNarratives {
   since_turn: number;
 }
 
+export interface BlockchainTransferSummary {
+  executed: number;
+  failed: number;
+  total_transfers: number;
+}
+
 export interface SimulationSummary {
   simulation_id: string;
   seed: number;
@@ -77,6 +83,7 @@ export interface SimulationSummary {
   action_counts: Record<string, number>;
   log_digest: string;
   rules_version: number;
+  blockchain_transfers?: BlockchainTransferSummary;
 }
 
 export type RuleValue = string | number | boolean | string[] | number[];
