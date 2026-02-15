@@ -45,7 +45,7 @@ export default function RulesPage() {
     : { economy: {}, violence: {}, governance: {} };
 
   return (
-    <div className="h-full w-full p-8 md:p-12 flex flex-col overflow-y-auto">
+    <div className="h-full w-full p-4 sm:p-6 md:p-8 lg:p-12 flex flex-col overflow-y-auto">
       <div className="max-w-5xl mx-auto w-full">
 
         <Link href="/" className="mb-8 text-slate-500 hover:text-white flex items-center gap-2 font-mono text-sm transition-colors">

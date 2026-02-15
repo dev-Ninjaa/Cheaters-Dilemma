@@ -86,7 +86,7 @@
 
   /* Retro Button */
   .retro-button {
-    @apply px-4 py-2 font-mono font-bold text-slate-900 bg-yellow-500 border-2 border-yellow-600 hover:bg-yellow-400 hover:border-yellow-500 transition-all duration-200 hover:shadow-[0_0_10px_rgba(234,179,8,0.4)] cursor-pointer rounded-sm;
+    @apply px-3 md:px-4 py-2 font-mono font-bold text-slate-900 bg-yellow-500 border-2 border-yellow-600 hover:bg-yellow-400 hover:border-yellow-500 transition-all duration-200 hover:shadow-[0_0_10px_rgba(234,179,8,0.4)] cursor-pointer rounded-sm text-sm md:text-base;
   }
 
   .retro-button:hover {
@@ -100,21 +100,33 @@
   /* Retro Title */
   .retro-title {
     font-family: var(--font-pixel);
-    @apply text-3xl text-yellow-500 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)];
+    @apply text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl text-yellow-500 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)];
     font-size: 2rem;
     letter-spacing: 0.1em;
     line-height: 1.4;
   }
 
-  @media (min-width: 768px) {
+  @media (min-width: 640px) {
     .retro-title {
       font-size: 2.5rem;
     }
   }
 
-  @media (min-width: 1024px) {
+  @media (min-width: 768px) {
     .retro-title {
       font-size: 3rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .retro-title {
+      font-size: 3.5rem;
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .retro-title {
+      font-size: 4rem;
     }
   }
 
@@ -126,11 +138,11 @@
 
   /* Stat Label */
   .stat-label {
-    @apply text-xs font-bold text-yellow-500 uppercase tracking-wider font-mono;
+    @apply text-xs sm:text-xs font-bold text-yellow-500 uppercase tracking-wider font-mono;
   }
 
   .stat-value {
-    @apply text-lg font-bold text-yellow-400 font-mono;
+    @apply text-base sm:text-lg font-bold text-yellow-400 font-mono;
   }
 
   /* Glitch Effect - Updated */

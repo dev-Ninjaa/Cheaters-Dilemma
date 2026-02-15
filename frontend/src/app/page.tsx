@@ -5,29 +5,29 @@ import { Terminal, Cpu, BookOpen, BarChart3 } from "lucide-react";
 
 export default function Home() {
   return (
-    <div className="w-full h-full overflow-auto p-6 md:p-12 bg-slate-950">
-      <div className="mx-auto max-w-6xl space-y-10">
+    <div className="w-full h-full overflow-auto p-3 sm:p-4 md:p-6 bg-slate-950">
+      <div className="mx-auto max-w-6xl space-y-4 sm:space-y-6 md:space-y-10">
         {/* Title Section */}
-        <div className="text-center space-y-4 mb-12">
-          <h1 className="retro-title text-4xl md:text-6xl">
+        <div className="text-center space-y-2 sm:space-y-3 md:space-y-4 mb-6 sm:mb-8 md:mb-12">
+          <h1 className="retro-title text-2xl sm:text-3xl md:text-4xl lg:text-6xl">
             THE CHEATER&apos;S DILEMMA
           </h1>
           <div className="h-px w-full bg-gradient-to-r from-transparent via-slate-700 to-transparent"></div>
-          <h2 className="font-pixel text-lg md:text-xl text-blue-400 tracking-widest">
+          <h2 className="font-pixel text-sm sm:text-base md:text-lg lg:text-xl text-blue-400 tracking-widest">
             &gt; MULTI AGENT WAR GAME &lt;
           </h2>
-          <p className="text-slate-500 font-mono text-xs md:text-sm tracking-[0.2em] uppercase">
+          <p className="text-slate-500 font-mono text-xs sm:text-sm tracking-[0.2em] uppercase px-2 sm:px-4">
             WHERE TRUST IS A LIABILITY AND BETRAYAL IS A STRATEGY
           </p>
         </div>
 
         {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-4 md:gap-6">
           {/* Left Column: Philosophy & Content */}
-          <div className="lg:col-span-7 space-y-6">
+          <div className="lg:col-span-7 space-y-3 sm:space-y-4 md:space-y-6">
             {/* Main Philosophy */}
-            <div className="bg-slate-900/50 border border-slate-700 p-6 rounded-sm shadow-lg relative group hover:border-slate-600 transition-colors">
-              <div className="absolute -top-3 left-4 bg-slate-950 px-2 text-yellow-500 font-pixel text-[10px] border border-slate-800">
+            <div className="bg-slate-900/50 border border-slate-700 p-4 sm:p-6 rounded-sm shadow-lg relative group hover:border-slate-600 transition-colors">
+              <div className="absolute -top-3 left-3 sm:left-4 bg-slate-950 px-2 text-yellow-500 font-pixel text-[10px] border border-slate-800">
                 [ THE MATHEMATICS OF BETRAYAL ]
               </div>
 
@@ -138,7 +138,7 @@ export default function Home() {
           </div>
 
           {/* Right Column: Menu & Actions */}
-          <div className="lg:col-span-5 space-y-4 flex flex-col">
+          <div className="lg:col-span-5 space-y-3 md:space-y-4 flex flex-col">
             {/* Launch World Button */}
             <Link href="/simulation">
               <button className="group relative bg-slate-900 hover:bg-slate-800 border-2 border-yellow-600/40 hover:border-yellow-500 p-6 transition-all duration-300 text-left overflow-hidden shadow-lg rounded-sm">
@@ -162,7 +162,7 @@ export default function Home() {
             </Link>
 
             {/* Sub Menu Grid */}
-            <div className="grid grid-cols-1 gap-3 flex-1">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-2 md:gap-3 flex-1">
               <Link href="/agents" className="block">
                 <button className="flex items-center justify-between bg-slate-900 border border-slate-700 hover:border-blue-500 hover:bg-slate-800/50 p-4 group transition-all rounded-sm w-full text-left">
                   <div className="flex flex-col">
@@ -175,6 +175,23 @@ export default function Home() {
                     </span>
                   </div>
                   <div className="opacity-0 group-hover:opacity-100 transition-opacity text-blue-400 font-mono text-lg">
+                    &gt;
+                  </div>
+                </button>
+              </Link>
+
+              <Link href="/wallets" className="block">
+                <button className="flex items-center justify-between bg-slate-900 border border-slate-700 hover:border-purple-500 hover:bg-slate-800/50 p-4 group transition-all rounded-sm w-full text-left">
+                  <div className="flex flex-col">
+                    <div className="flex items-center gap-2 mb-1 text-slate-300 group-hover:text-purple-400">
+                      <Terminal size={16} />{" "}
+                      <span className="font-pixel text-xs">[ WALLETS ]</span>
+                    </div>
+                    <span className="text-[10px] text-slate-500 font-mono">
+                      Agent Addresses & Token Balances
+                    </span>
+                  </div>
+                  <div className="opacity-0 group-hover:opacity-100 transition-opacity text-purple-400 font-mono text-lg">
                     &gt;
                   </div>
                 </button>

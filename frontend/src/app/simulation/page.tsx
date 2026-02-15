@@ -279,7 +279,7 @@ export default function SimulationPage() {
     }
 
     try {
-      await apiClient.post(`/api/v1/simulation/${state.simulationId}/save-replay`);
+      await apiClient.post(`/simulation/${state.simulationId}/save-replay`);
       // Could add a toast notification here if desired
     } catch (error) {
       console.error("Failed to save replay:", error);
@@ -305,9 +305,10 @@ export default function SimulationPage() {
   }
 
   return (
-    <div className="w-full h-full overflow-auto p-4">
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 h-full">
-        <div className="lg:col-span-1 space-y-4">
+    <div className="w-full h-full overflow-auto p-1 sm:p-2 md:p-4">
+      <div className="grid grid-cols-1 xl:grid-cols-4 gap-1 sm:gap-2 md:gap-4 h-full min-h-[600px] lg:min-h-[700px]">
+        {/* Left Panel - Controls */}
+        <div className="xl:col-span-1 space-y-1 sm:space-y-2 md:space-y-4 order-3 xl:order-1">
           <SimulationControls
             isRunning={state.isRunning || state.isAutoPlaying || state.isStepping || state.streamStatus === "connecting"}
             currentTurn={state.displayTurn}
@@ -344,18 +345,19 @@ export default function SimulationPage() {
           />
         </div>
 
-        <div className="lg:col-span-2">
+        {/* Center Panel - World Visualization */}
+        <div className="xl:col-span-2 order-1 xl:order-2 min-h-[300px] sm:min-h-[400px] xl:min-h-0">
           <GamePanel title="WORLD VISUALIZATION" className="h-full">
             {!state.simulationState ? (
-              <div className="h-full flex items-center justify-center text-[#94a3b8] font-mono text-center">
+              <div className="h-full flex items-center justify-center text-[#94a3b8] font-mono text-center p-4">
                 <div>
-                  <div className="text-xl font-bold text-[#eab308] mb-4">&gt; READY TO LAUNCH &lt;</div>
+                  <div className="text-lg sm:text-xl font-bold text-[#eab308] mb-4">&gt; READY TO LAUNCH &lt;</div>
                   <div className="text-sm opacity-50">Configure parameters and start simulation</div>
                 </div>
               </div>
             ) : (
               <div className="h-full flex flex-col">
-                <div className="flex-1 mb-4 min-h-0 flex items-center justify-center">
+                <div className="flex-1 mb-2 sm:mb-4 min-h-0 flex items-center justify-center">
                   <GameBoard
                     agents={state.simulationState.agents}
                     onAgentClick={(agent) => dispatch({ type: "SELECT_AGENT", agentId: agent.agent_id })}
@@ -363,59 +365,59 @@ export default function SimulationPage() {
                     showInteractions={true}
                     agentCount={state.config.agent_count}
                     seed={state.config.seed}
-                    recentEvents={state.events.slice(-20)} // Pass last 20 events for action display
+                    recentEvents={state.events.slice(-20)}
                   />
                 </div>
 
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {/* Statistics Panels - Stack on mobile, grid on larger screens */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-1 sm:gap-2 md:gap-4">
                   <GamePanel title="RESOURCE DISTRIBUTION">
-                    <div className="space-y-2 text-xs font-mono">
+                    <div className="space-y-1 sm:space-y-2 text-xs font-mono">
                       {state.simulationState.agents.slice(0, 5).map((agent) => (
-                        <div key={agent.agent_id} className="flex justify-between">
+                        <div key={agent.agent_id} className="flex justify-between text-xs sm:text-sm">
                           <span className="text-[#94a3b8]">Agent {agent.agent_id}:</span>
-                          <span className="text-[#eab308]">${agent.resources}</span>
+                          <span className="text-[#eab308] font-bold">${agent.resources}</span>
                         </div>
                       ))}
                       {state.simulationState.agents.length > 5 && (
-                        <div className="text-[#94a3b8] opacity-50">... +{state.simulationState.agents.length - 5} more</div>
+                        <div className="text-[#94a3b8] opacity-50 text-xs">... +{state.simulationState.agents.length - 5} more</div>
                       )}
                     </div>
                   </GamePanel>
                   <GamePanel title="TRUST DISTRIBUTION">
-                    <div className="space-y-2 text-xs font-mono">
+                    <div className="space-y-1 sm:space-y-2 text-xs font-mono">
                       {state.simulationState.agents.slice(0, 5).map((agent) => (
-                        <div key={agent.agent_id} className="flex justify-between">
+                        <div key={agent.agent_id} className="flex justify-between text-xs sm:text-sm">
                           <span className="text-[#94a3b8]">Agent {agent.agent_id}:</span>
-                          <span className="text-[#eab308]">{agent.trust?.toFixed(2)}</span>
+                          <span className="text-[#eab308] font-bold">{agent.trust?.toFixed(2)}</span>
                         </div>
                       ))}
                       {state.simulationState.agents.length > 5 && (
-                        <div className="text-[#94a3b8] opacity-50">... +{state.simulationState.agents.length - 5} more</div>
+                        <div className="text-[#94a3b8] opacity-50 text-xs">... +{state.simulationState.agents.length - 5} more</div>
                       )}
                     </div>
                   </GamePanel>
                   <GamePanel title="METRICS">
-                    <div className="space-y-2 text-xs font-mono">
-                      <div className="flex justify-between">
+                    <div className="space-y-1 sm:space-y-2 text-xs font-mono">
+                      <div className="flex justify-between text-xs sm:text-sm">
                         <span className="text-[#94a3b8]">GINI:</span>
-                        <span className="text-[#eab308]">{state.simulationState.metrics?.gini_resources?.toFixed(3) || "0.000"}</span>
+                        <span className="text-[#eab308] font-bold">{state.simulationState.metrics?.gini_resources?.toFixed(3) || "0.000"}</span>
                       </div>
-                      <div className="flex justify-between">
+                      <div className="flex justify-between text-xs sm:text-sm">
                         <span className="text-[#94a3b8]">HHI:</span>
-                        <span className="text-[#eab308]">{state.simulationState.metrics?.hhi_resources?.toFixed(3) || "0.000"}</span>
+                        <span className="text-[#eab308] font-bold">{state.simulationState.metrics?.hhi_resources?.toFixed(3) || "0.000"}</span>
                       </div>
-                      <div className="flex justify-between">
+                      <div className="flex justify-between text-xs sm:text-sm">
                         <span className="text-[#94a3b8]">AVG STR:</span>
-                        <span className="text-[#eab308]">{state.simulationState.metrics?.avg_strength?.toFixed(2) || "0.00"}</span>
+                        <span className="text-[#eab308] font-bold">{state.simulationState.metrics?.avg_strength?.toFixed(2) || "0.00"}</span>
                       </div>
-                      <div className="flex justify-between">
+                      <div className="flex justify-between text-xs sm:text-sm">
                         <span className="text-[#94a3b8]">AVG TOK:</span>
-                        <span className="text-[#eab308]">{state.simulationState.metrics?.avg_resources?.toFixed(2) || "0.00"}</span>
+                        <span className="text-[#eab308] font-bold">{state.simulationState.metrics?.avg_resources?.toFixed(2) || "0.00"}</span>
                       </div>
-                      <div className="flex justify-between">
+                      <div className="flex justify-between text-xs sm:text-sm">
                         <span className="text-[#94a3b8]">GOV:</span>
-                        <span className="text-[#eab308]">{state.simulationState.metrics?.governance_level?.toFixed(2) || "0.00"}</span>
+                        <span className="text-[#eab308] font-bold">{state.simulationState.metrics?.governance_level?.toFixed(2) || "0.00"}</span>
                       </div>
                     </div>
                   </GamePanel>
@@ -425,11 +427,12 @@ export default function SimulationPage() {
           </GamePanel>
         </div>
 
-        <div className="lg:col-span-1 space-y-4">
+        {/* Right Panel - Agent Details & Events */}
+        <div className="xl:col-span-1 space-y-1 sm:space-y-2 md:space-y-4 order-2 xl:order-3">
           <GamePanel title="SELECTED AGENT">
-            <AgentCard 
-              agent={selectedAgent} 
-              recentEvents={state.events.slice(-10)} // Pass last 10 events for status display
+            <AgentCard
+              agent={selectedAgent}
+              recentEvents={state.events.slice(-10)}
             />
           </GamePanel>
 
@@ -445,7 +448,7 @@ export default function SimulationPage() {
                 type: event.outcome.includes("success") ? "success" : "neutral",
               }))}
               live={state.isAutoPlaying || state.isStepping || state.streamStatus === "connecting" || state.streamStatus === "connected"}
-              maxHeight="h-[28rem]"
+              maxHeight="h-[15rem] sm:h-[20rem] md:h-[28rem]"
             />
           </GamePanel>
         </div>
