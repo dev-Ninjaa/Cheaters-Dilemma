@@ -172,7 +172,7 @@ class MetricsService:
     @staticmethod
     def compute_metrics(result: dict[str, Any]) -> dict[str, Any]:
         """Compute comprehensive metrics for a simulation result."""
-        token_balances = [row["token_balance"] for row in result["leaderboard"]]
+        token_balances = [row["resources"] for row in result["leaderboard"]]
         alive_count = sum(1 for row in result["leaderboard"] if row["alive"])
         governance = MetricsService._calculate_governance_capture_metrics(result)
         timeline = MetricsService._calculate_timeline_markers(result)

@@ -16,7 +16,7 @@ class AnalyticsService:
             state = "alive" if row["alive"] else "removed"
             lines.append(
                 f"{idx:>2}. agent={row['agent_id']:>2} type={row['strategy']:<10} "
-                f"tokens={row['token_balance']:<4} str={row['strength']:<2} {state:<10} "
+                f"tokens={row['resources']:<4} str={row['strength']:<2} {state:<10} "
                 f"trust={row['trust']:.2f} aggr={row['aggression']:.2f}"
             )
         return lines
