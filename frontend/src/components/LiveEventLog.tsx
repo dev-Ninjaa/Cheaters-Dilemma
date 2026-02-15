@@ -86,36 +86,38 @@ export function LiveEventLog({ events, maxHeight = "h-64", live = false }: LiveE
   return (
     <div>
       <div className="mb-2 space-y-2 text-xs font-mono">
-        <div className="flex items-center gap-2">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
           <input
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search events..."
-            className="flex-1 bg-[#1a1f2e] border border-[#94a3b8] text-[#eab308] px-2 py-1 focus:outline-none focus:border-[#475569]"
+            className="flex-1 bg-[#1a1f2e] border border-[#94a3b8] text-[#eab308] px-2 py-1 focus:outline-none focus:border-[#475569] text-xs sm:text-sm"
           />
-          <button
-            type="button"
-            onClick={toggleFollowTail}
-            className={`px-2 py-1 border text-[10px] tracking-wide ${
-              followTail
-                ? "border-[#eab308] text-[#eab308]"
-                : "border-[#475569] text-[#475569]"
-            }`}
-          >
-            {followTail ? "FOLLOW ON" : "FOLLOW OFF"}
-          </button>
-          {live && (
-            <span className="px-2 py-1 border border-[#00ff66] text-[#00ff66] text-[10px] tracking-wide">
-              LIVE
-            </span>
-          )}
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={toggleFollowTail}
+              className={`px-2 py-1 border text-[10px] tracking-wide min-w-[80px] ${
+                followTail
+                  ? "border-[#eab308] text-[#eab308]"
+                  : "border-[#475569] text-[#475569]"
+              }`}
+            >
+              {followTail ? "FOLLOW ON" : "FOLLOW OFF"}
+            </button>
+            {live && (
+              <span className="px-2 py-1 border border-[#00ff66] text-[#00ff66] text-[10px] tracking-wide">
+                LIVE
+              </span>
+            )}
+          </div>
         </div>
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
           <select
             value={actionFilter}
             onChange={(e) => setActionFilter(e.target.value)}
-            className="bg-[#1a1f2e] border border-[#94a3b8] text-[#eab308] px-2 py-1"
+            className="bg-[#1a1f2e] border border-[#94a3b8] text-[#eab308] px-2 py-1 text-xs sm:text-sm"
           >
             <option value="ALL">ALL ACTIONS</option>
             {actionOptions.map((action) => (
@@ -127,7 +129,7 @@ export function LiveEventLog({ events, maxHeight = "h-64", live = false }: LiveE
           <select
             value={agentFilter}
             onChange={(e) => setAgentFilter(e.target.value)}
-            className="bg-[#1a1f2e] border border-[#94a3b8] text-[#eab308] px-2 py-1"
+            className="bg-[#1a1f2e] border border-[#94a3b8] text-[#eab308] px-2 py-1 text-xs sm:text-sm"
           >
             <option value="ALL">ALL AGENTS</option>
             {agentOptions.map((agentId) => (

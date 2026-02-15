@@ -61,12 +61,13 @@ const AgentCard: React.FC<AgentCardProps> = ({ agent, recentEvents = [] }) => {
   };
 
   const getActionIcon = (action: string) => {
+    const iconSize = typeof window !== 'undefined' && window.innerWidth < 640 ? 12 : 14;
     switch (action.toLowerCase()) {
-      case 'attack': return <Swords size={14} className="text-red-500" />;
-      case 'steal': return <HandCoins size={14} className="text-yellow-500" />;
-      case 'work': return <ShieldPlus size={14} className="text-green-500" />;
-      case 'vote': return <Trophy size={14} className="text-blue-500" />;
-      default: return <Footprints size={14} className="text-slate-400" />;
+      case 'attack': return <Swords size={iconSize} className="text-red-500" />;
+      case 'steal': return <HandCoins size={iconSize} className="text-yellow-500" />;
+      case 'work': return <ShieldPlus size={iconSize} className="text-green-500" />;
+      case 'vote': return <Trophy size={iconSize} className="text-blue-500" />;
+      default: return <Footprints size={iconSize} className="text-slate-400" />;
     }
   };
 
@@ -81,9 +82,9 @@ const AgentCard: React.FC<AgentCardProps> = ({ agent, recentEvents = [] }) => {
   };
 
   return (
-    <div className={`bg-slate-800 p-4 rounded-lg border-2 ${agent.alive ? getStrategyColor(agent.strategy) : 'border-gray-600'} shadow-lg transition-all`}>
-      <div className="flex items-center gap-4 mb-4">
-        <div className="w-16 h-16 bg-slate-900 rounded-lg overflow-hidden border border-slate-600">
+    <div className={`bg-slate-800 p-3 sm:p-4 rounded-lg border-2 ${agent.alive ? getStrategyColor(agent.strategy) : 'border-gray-600'} shadow-lg transition-all`}>
+      <div className="flex items-center gap-3 sm:gap-4 mb-3 sm:mb-4">
+        <div className="w-12 h-12 sm:w-16 sm:h-16 bg-slate-900 rounded-lg overflow-hidden border border-slate-600">
           <img
             src={`${AVATAR_API_BASE}${agent.agent_id}`}
             alt={`Agent ${agent.agent_id}`}
@@ -91,9 +92,9 @@ const AgentCard: React.FC<AgentCardProps> = ({ agent, recentEvents = [] }) => {
           />
         </div>
         <div>
-          <h3 className="font-bold text-lg text-white flex items-center gap-2">
+          <h3 className="font-bold text-base sm:text-lg text-white flex items-center gap-2">
             Agent {agent.agent_id}
-            {!agent.alive && <Skull size={16} className="text-gray-400" />}
+            {!agent.alive && <Skull size={14} className="text-gray-400" />}
           </h3>
           <div className="text-xs font-mono text-slate-400 uppercase tracking-wider">
             {agent.strategy} CLASS
@@ -104,58 +105,58 @@ const AgentCard: React.FC<AgentCardProps> = ({ agent, recentEvents = [] }) => {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-2 text-sm">
-        <div className="bg-slate-900/50 p-2 rounded flex items-center justify-between">
-          <span className="text-slate-400 flex items-center gap-1"><Heart size={12}/> HP</span>
-          <span className={`${agent.health < 15 ? 'text-red-500' : 'text-green-400'} font-mono`}>
-            {agent.health}/50
+      <div className="grid grid-cols-2 gap-1 sm:gap-2 text-xs sm:text-sm">
+        <div className="bg-slate-900/50 p-1.5 sm:p-2 rounded flex items-center justify-between">
+          <span className="text-slate-400 flex items-center gap-1"><Heart size={10} className="sm:w-3 sm:h-3"/> HP</span>
+          <span className={`${(agent.health ?? 50) < 15 ? 'text-red-500' : 'text-green-400'} font-mono text-xs sm:text-sm`}>
+            {(agent.health ?? 50)}/50
           </span>
         </div>
-        <div className="bg-slate-900/50 p-2 rounded flex items-center justify-between">
-          <span className="text-slate-400 flex items-center gap-1"><Trophy size={12}/> KILLS</span>
-          <span className="text-white font-mono">{agent.kills}</span>
+        <div className="bg-slate-900/50 p-1.5 sm:p-2 rounded flex items-center justify-between">
+          <span className="text-slate-400 flex items-center gap-1"><Trophy size={10} className="sm:w-3 sm:h-3"/> KILLS</span>
+          <span className="text-white font-mono text-xs sm:text-sm">{agent.kills}</span>
         </div>
-        <div className="bg-slate-900/50 p-2 rounded flex items-center justify-between">
-          <span className="text-slate-400 flex items-center gap-1"><Sword size={12}/> STRENGTH</span>
-          <span className="text-white font-mono">{agent.strength.toFixed(1)}</span>
+        <div className="bg-slate-900/50 p-1.5 sm:p-2 rounded flex items-center justify-between">
+          <span className="text-slate-400 flex items-center gap-1"><Sword size={10} className="sm:w-3 sm:h-3"/> STRENGTH</span>
+          <span className="text-white font-mono text-xs sm:text-sm">{agent.strength.toFixed(1)}</span>
         </div>
-        <div className="bg-slate-900/50 p-2 rounded flex items-center justify-between">
-          <span className="text-slate-400 flex items-center gap-1"><Shield size={12}/> AGGRESSION</span>
-          <span className="text-white font-mono">{agent.aggression.toFixed(2)}</span>
+        <div className="bg-slate-900/50 p-1.5 sm:p-2 rounded flex items-center justify-between">
+          <span className="text-slate-400 flex items-center gap-1"><Shield size={10} className="sm:w-3 sm:h-3"/> AGGRESSION</span>
+          <span className="text-white font-mono text-xs sm:text-sm">{agent.aggression.toFixed(2)}</span>
         </div>
       </div>
 
       {/* Additional Metrics for AgentDetail */}
       {agentDetail && (
-        <div className="mt-3 pt-3 border-t border-slate-700">
+        <div className="mt-2 sm:mt-3 pt-2 sm:pt-3 border-t border-slate-700">
           <div className="text-xs text-slate-400 mb-2 font-bold uppercase tracking-wider">ACTION STATISTICS</div>
-          <div className="grid grid-cols-2 gap-2 text-sm">
-            <div className="bg-slate-900/50 p-2 rounded flex items-center justify-between">
-              <span className="text-slate-400 flex items-center gap-1"><Target size={12}/> TOTAL</span>
-              <span className="text-white font-mono">{agentDetail.total_actions}</span>
+          <div className="grid grid-cols-2 gap-1 sm:gap-2 text-xs sm:text-sm">
+            <div className="bg-slate-900/50 p-1.5 sm:p-2 rounded flex items-center justify-between">
+              <span className="text-slate-400 flex items-center gap-1"><Target size={10} className="sm:w-3 sm:h-3"/> TOTAL</span>
+              <span className="text-white font-mono text-xs sm:text-sm">{agentDetail.total_actions}</span>
             </div>
-            <div className="bg-slate-900/50 p-2 rounded flex items-center justify-between">
-              <span className="text-slate-400 flex items-center gap-1"><TrendingUp size={12}/> SUCCESS</span>
-              <span className="text-green-400 font-mono">{agentDetail.successful_actions}</span>
+            <div className="bg-slate-900/50 p-1.5 sm:p-2 rounded flex items-center justify-between">
+              <span className="text-slate-400 flex items-center gap-1"><TrendingUp size={10} className="sm:w-3 sm:h-3"/> SUCCESS</span>
+              <span className="text-green-400 font-mono text-xs sm:text-sm">{agentDetail.successful_actions}</span>
             </div>
-            <div className="bg-slate-900/50 p-2 rounded flex items-center justify-between">
-              <span className="text-slate-400 flex items-center gap-1"><TrendingDown size={12}/> FAILED</span>
-              <span className="text-red-400 font-mono">{agentDetail.failed_actions}</span>
+            <div className="bg-slate-900/50 p-1.5 sm:p-2 rounded flex items-center justify-between">
+              <span className="text-slate-400 flex items-center gap-1"><TrendingDown size={10} className="sm:w-3 sm:h-3"/> FAILED</span>
+              <span className="text-red-400 font-mono text-xs sm:text-sm">{agentDetail.failed_actions}</span>
             </div>
-            <div className="bg-slate-900/50 p-2 rounded flex items-center justify-between">
+            <div className="bg-slate-900/50 p-1.5 sm:p-2 rounded flex items-center justify-between">
               <span className="text-slate-400 flex items-center gap-1">RANK</span>
-              <span className="text-yellow-400 font-mono">#{agentDetail.rank || 'N/A'}</span>
+              <span className="text-yellow-400 font-mono text-xs sm:text-sm">#{agentDetail.rank || 'N/A'}</span>
             </div>
           </div>
         </div>
       )}
 
-      <div className="mt-4 pt-4 border-t border-slate-700">
+      <div className="mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-slate-700">
         <div className="text-xs text-slate-400 mb-1 flex items-center gap-2">
           CURRENT STATUS
           {recentAction && getActionIcon(recentAction.action)}
         </div>
-        <div className="text-sm text-white">
+        <div className="text-xs sm:text-sm text-white">
           {agent.alive ? (
              <span className="italic">
                {recentAction ? getActionDescription(recentAction.action, recentAction.target, recentAction.outcome) : 'Active in simulation'}

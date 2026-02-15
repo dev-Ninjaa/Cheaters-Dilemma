@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { AgentSummary } from '@/lib/types';
 import { Skull, Swords, Footprints, HandCoins, ShieldPlus, Trophy } from 'lucide-react';
 
@@ -48,6 +48,30 @@ const GameBoard: React.FC<GameBoardProps> = ({
 }) => {
   // Filter only alive agents
   const aliveAgents = agents.filter(agent => agent.alive);
+
+  // Responsive grid size state
+  const [gridSize, setGridSize] = useState(15);
+
+  // Responsive grid size calculation
+  const getGridSize = () => {
+    if (typeof window !== 'undefined') {
+      const width = window.innerWidth;
+      if (width < 640) return 10; // Mobile
+      if (width < 1024) return 12; // Tablet
+      return 15; // Desktop
+    }
+    return 15; // Default
+  };
+
+  // Update grid size on mount and resize
+  useEffect(() => {
+    const updateGridSize = () => setGridSize(getGridSize());
+    updateGridSize();
+    window.addEventListener('resize', updateGridSize);
+    return () => window.removeEventListener('resize', updateGridSize);
+  }, []);
+
+  const GRID_SIZE = gridSize;
 
   // Simple seeded random number generator
   const seededRandom = (seed: string) => {
@@ -154,20 +178,22 @@ const GameBoard: React.FC<GameBoardProps> = ({
       .filter(event => event.actor === agent.agent_id)
       .sort((a, b) => b.turn - a.turn)[0];
 
+    const iconSize = GRID_SIZE <= 10 ? 10 : GRID_SIZE <= 12 ? 12 : 14;
+
     if (!recentAction) {
       // Fallback to aggression-based icons
-      if (agent.aggression > 0.7) return <Swords size={12} className="text-red-500 animate-pulse" />;
-      if (agent.resources > 50) return <HandCoins size={12} className="text-yellow-500" />;
-      if (agent.strength > 50) return <ShieldPlus size={12} className="text-green-500" />;
-      return <Footprints size={12} className="text-slate-400" />;
+      if (agent.aggression > 0.7) return <Swords size={iconSize} className="text-red-500 animate-pulse" />;
+      if (agent.resources > 50) return <HandCoins size={iconSize} className="text-yellow-500" />;
+      if (agent.strength > 50) return <ShieldPlus size={iconSize} className="text-green-500" />;
+      return <Footprints size={iconSize} className="text-slate-400" />;
     }
 
     switch (recentAction.action.toLowerCase()) {
-      case 'attack': return <Swords size={14} className="text-red-500 animate-pulse drop-shadow-lg" />;
-      case 'steal': return <HandCoins size={14} className="text-yellow-500 animate-bounce drop-shadow-lg" />;
-      case 'work': return <ShieldPlus size={14} className="text-green-500 animate-pulse drop-shadow-lg" />;
-      case 'vote': return <Trophy size={14} className="text-blue-500 animate-bounce drop-shadow-lg" />;
-      default: return <Footprints size={14} className="text-slate-400 drop-shadow-lg" />;
+      case 'attack': return <Swords size={iconSize} className="text-red-500 animate-pulse drop-shadow-lg" />;
+      case 'steal': return <HandCoins size={iconSize} className="text-yellow-500 animate-bounce drop-shadow-lg" />;
+      case 'work': return <ShieldPlus size={iconSize} className="text-green-500 animate-pulse drop-shadow-lg" />;
+      case 'vote': return <Trophy size={iconSize} className="text-blue-500 animate-bounce drop-shadow-lg" />;
+      default: return <Footprints size={iconSize} className="text-slate-400 drop-shadow-lg" />;
     }
   };
 
@@ -204,17 +230,17 @@ const GameBoard: React.FC<GameBoardProps> = ({
 
   return (
     <div className="space-y-2">
-      <div className="text-xs text-slate-400 font-mono">
+      <div className="text-xs sm:text-sm text-slate-400 font-mono text-center">
         Agents: {aliveAgents.length}/{agentCount} alive | Seed: {seed}
       </div>
-      <div 
-        className="grid gap-1 bg-slate-800 p-2 rounded-lg border-2 border-slate-700 shadow-2xl overflow-hidden"
+      <div
+        className="grid gap-0.5 sm:gap-1 bg-slate-800 p-1 sm:p-2 rounded-lg border-2 border-slate-700 shadow-2xl overflow-hidden w-full max-w-4xl mx-auto touch-manipulation"
         style={{
           gridTemplateColumns: `repeat(${GRID_SIZE}, 1fr)`,
           gridTemplateRows: `repeat(${GRID_SIZE}, 1fr)`,
           aspectRatio: '1/1',
-          width: '800px',
-          height: '800px'
+          maxWidth: GRID_SIZE <= 10 ? '300px' : GRID_SIZE <= 12 ? '400px' : '600px',
+          maxHeight: GRID_SIZE <= 10 ? '300px' : GRID_SIZE <= 12 ? '400px' : '600px'
         }}
       >
       {cells.map((cell) => {
@@ -272,8 +298,8 @@ const GameBoard: React.FC<GameBoardProps> = ({
                     .sort((a, b) => b.turn - a.turn)[0];
                   return actionDetails && recentAction ? (
                     <div className={`
-                        absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap z-30
-                        px-2 py-1 rounded-md text-[10px] font-bold border-2 shadow-xl pointer-events-none
+                        absolute -top-6 sm:-top-8 left-1/2 -translate-x-1/2 whitespace-nowrap z-30
+                        px-1 sm:px-2 py-0.5 sm:py-1 rounded-md text-[8px] sm:text-[10px] font-bold border-2 shadow-xl pointer-events-none
                         animate-fade-in-up backdrop-blur-sm
                         ${getInteractionColor(recentAction.action)}
                     `}>
@@ -283,7 +309,7 @@ const GameBoard: React.FC<GameBoardProps> = ({
                 })()}
 
                 {/* Score Tag */}
-                <div className="absolute top-0 left-0 bg-black/60 text-[8px] text-white px-1 rounded-br backdrop-blur-sm font-mono">
+                <div className="absolute top-0 left-0 bg-black/60 text-[6px] sm:text-[8px] text-white px-0.5 sm:px-1 rounded-br backdrop-blur-sm font-mono">
                     {Math.floor(agent.resources)}
                 </div>
               </div>
@@ -292,9 +318,10 @@ const GameBoard: React.FC<GameBoardProps> = ({
             {/* Render Dead Bodies */}
             {!agent && (() => {
               const deadAgent = agents.find(a => !a.alive && getAgentPosition(a).x === cell.x && getAgentPosition(a).y === cell.y);
+              const skullSize = GRID_SIZE <= 10 ? 12 : GRID_SIZE <= 12 ? 16 : 18;
               return deadAgent ? (
                 <div className="opacity-40 grayscale animate-pulse">
-                  <Skull size={18} className="text-slate-500 drop-shadow-sm" />
+                  <Skull size={skullSize} className="text-slate-500 drop-shadow-sm" />
                 </div>
               ) : null;
             })()}

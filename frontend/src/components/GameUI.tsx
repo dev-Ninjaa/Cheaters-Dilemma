@@ -95,25 +95,25 @@ export function AgentCard({ agent, rank }: AgentCardProps) {
         <div className="text-lg font-bold text-yellow-500 font-pixel">
           #{rank}
         </div>
-        <div className="flex-1">
-          <div className="font-bold text-white">
-            {agent.name || `Agent ${agent.id}`}
+        <div className="flex-1 min-w-0">
+          <div className="font-bold text-white truncate">
+            {agent.name || `Agent ${agent.agent_id !== undefined ? agent.agent_id : (agent.id !== undefined ? agent.id : 'undefined')}`}
           </div>
-          <div className="text-xs text-slate-400">{agent.type || "agent"}</div>
+          <div className="text-xs text-slate-400 truncate">{(agent.type || agent.strategy || "agent").toUpperCase()}</div>
         </div>
       </div>
       <div className="space-y-2 text-xs font-mono">
-        <div className="flex justify-between">
-          <span className="text-slate-400">RESOURCE:</span>
-          <span className="text-white font-bold">{agent.resources || 0}</span>
+        <div className="flex justify-between items-center min-w-0">
+          <span className="text-slate-400 flex-shrink-0">RESOURCE:</span>
+          <span className="text-white font-bold truncate ml-2">{agent.resources || 0}</span>
         </div>
-        <div className="flex justify-between">
-          <span className="text-slate-400">STRENGTH:</span>
-          <span className="text-white font-bold">{agent.strength || 0}</span>
+        <div className="flex justify-between items-center min-w-0">
+          <span className="text-slate-400 flex-shrink-0">STRENGTH:</span>
+          <span className="text-white font-bold truncate ml-2">{agent.strength || 0}</span>
         </div>
-        <div className="flex justify-between">
-          <span className="text-slate-400">TRUST:</span>
-          <span className="text-white font-bold">
+        <div className="flex justify-between items-center min-w-0">
+          <span className="text-slate-400 flex-shrink-0">TRUST:</span>
+          <span className="text-white font-bold truncate ml-2">
             {typeof agent.trust === "number"
               ? agent.trust.toFixed(2)
               : agent.trust}
