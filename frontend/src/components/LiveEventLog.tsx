@@ -157,7 +157,7 @@ export function LiveEventLog({ events, maxHeight = "h-64", live = false }: LiveE
                 key={`${event.turn}-${event.action ?? "event"}-${event.actor ?? "x"}-${event.target ?? "x"}-${idx}`}
                 className="text-[#94a3b8] border-l-2 border-[#475569] pl-2 py-1"
               >
-                <span className="text-[#475569]">[{event.turn ?? "?"}]</span> {event.message || event.type}
+                <span className="text-[#475569]">[{event.turn ?? "?"}]</span> {event.narrative || event.message || event.type}
               </div>
             ))}
           </div>

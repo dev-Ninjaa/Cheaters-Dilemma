@@ -24,6 +24,7 @@ interface GameBoardProps {
     action: string;
     target: number | null;
     outcome: string;
+    narrative?: string;
   }>;
 }
 
@@ -106,8 +107,9 @@ const GameBoard: React.FC<GameBoardProps> = ({
         break;
       case 'work':
         // Stay relatively still when working
-        moveX = Math.floor(Math.random() * 3) - 1;
-        moveY = Math.floor(Math.random() * 3) - 1;
+        const workRng = seededRandom(`${seed}-${agent.agent_id}-work-${actionCount}`);
+        moveX = Math.floor(workRng() * 3) - 1;
+        moveY = Math.floor(workRng() * 3) - 1;
         break;
       case 'vote':
         // Move towards center when voting (governance)
@@ -176,45 +178,8 @@ const GameBoard: React.FC<GameBoardProps> = ({
 
     if (!recentAction) return null;
 
-    // Parse outcome for specific results like the reference implementation
-    const outcome = recentAction.outcome.toLowerCase();
-
-    switch (recentAction.action.toLowerCase()) {
-      case 'attack':
-        if (outcome.includes('success') || outcome.includes('hit')) {
-          // Try to extract damage from outcome or use default
-          const damageMatch = recentAction.outcome.match(/(\d+)/);
-          const damage = damageMatch ? damageMatch[1] : '5';
-          return `Hit -${damage}`;
-        } else if (outcome.includes('kill')) {
-          // Extract loot amount
-          const lootMatch = recentAction.outcome.match(/(\d+)/);
-          const loot = lootMatch ? lootMatch[1] : '50';
-          return `KILL +${loot}`;
-        } else if (outcome.includes('miss') || outcome.includes('fail')) {
-          return `MISS`;
-        }
-        return recentAction.target ? `⚔️ Attacking #${recentAction.target}!` : '⚔️ Attacking!';
-      case 'steal':
-        if (outcome.includes('success') || outcome.includes('stole')) {
-          // Extract stolen amount
-          const stealMatch = recentAction.outcome.match(/(\d+)/);
-          const stolen = stealMatch ? stealMatch[1] : '5';
-          return `+${stolen} PTS`;
-        } else if (outcome.includes('caught') || outcome.includes('fail')) {
-          return `CAUGHT`;
-        }
-        return recentAction.target ? `💰 Stealing from #${recentAction.target}!` : '💰 Stealing!';
-      case 'work':
-        if (outcome.includes('success')) {
-          return `+2 PTS`;
-        }
-        return '⚒️ Working...';
-      case 'vote':
-        return '🗳️ Voting...';
-      default:
-        return null;
-    }
+    // Show just the action on the agent's head
+    return recentAction.action.toUpperCase();
   };
 
   const getInteractionColor = (action: string) => {

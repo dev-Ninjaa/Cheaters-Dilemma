@@ -99,21 +99,21 @@ const AgentCard: React.FC<AgentCardProps> = ({ agent, recentEvents = [] }) => {
             {agent.strategy} CLASS
           </div>
           <div className="text-xs text-yellow-400 font-bold mt-1">
-            RESOURCES: {Math.floor(agent.resources)}
+            TOKENS: {Math.floor(agent.resources)}
           </div>
         </div>
       </div>
 
       <div className="grid grid-cols-2 gap-2 text-sm">
         <div className="bg-slate-900/50 p-2 rounded flex items-center justify-between">
-          <span className="text-slate-400 flex items-center gap-1"><Heart size={12}/> ALIVE</span>
-          <span className={`${agent.alive ? 'text-green-400' : 'text-red-500'} font-mono`}>
-            {agent.alive ? 'YES' : 'NO'}
+          <span className="text-slate-400 flex items-center gap-1"><Heart size={12}/> HP</span>
+          <span className={`${agent.health < 15 ? 'text-red-500' : 'text-green-400'} font-mono`}>
+            {agent.health}/50
           </span>
         </div>
         <div className="bg-slate-900/50 p-2 rounded flex items-center justify-between">
-          <span className="text-slate-400 flex items-center gap-1"><Trophy size={12}/> TRUST</span>
-          <span className="text-white font-mono">{agent.trust.toFixed(2)}</span>
+          <span className="text-slate-400 flex items-center gap-1"><Trophy size={12}/> KILLS</span>
+          <span className="text-white font-mono">{agent.kills}</span>
         </div>
         <div className="bg-slate-900/50 p-2 rounded flex items-center justify-between">
           <span className="text-slate-400 flex items-center gap-1"><Sword size={12}/> STRENGTH</span>

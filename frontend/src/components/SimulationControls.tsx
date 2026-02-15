@@ -1,7 +1,15 @@
 "use client";
 
 import { GamePanel, GameButton, StatDisplay } from "@/components/GameUI";
-import { Play, Pause, SkipForward, RotateCcw, Download } from "lucide-react";
+import { Play, Pause, SkipForward, RotateCcw, Download, Save } from "lucide-react";
+
+interface Metrics {
+  gini_resources: number;
+  hhi_resources: number;
+  avg_strength: number;
+  avg_resources: number;
+  governance_level: number;
+}
 
 interface SimulationControlsProps {
   isRunning: boolean;
@@ -12,8 +20,10 @@ interface SimulationControlsProps {
   onPause?: () => void;
   onReset?: () => void;
   onExport?: () => void;
+  onSaveReplay?: () => void;
   seedValue?: number;
   agentCount?: number;
+  metrics?: Metrics;
 }
 
 export function SimulationControls({
@@ -25,8 +35,10 @@ export function SimulationControls({
   onPause,
   onReset,
   onExport,
+  onSaveReplay,
   seedValue,
   agentCount,
+  metrics,
 }: SimulationControlsProps) {
   const progress = maxTurns ? (currentTurn / maxTurns) * 100 : 0;
 
@@ -40,27 +52,43 @@ export function SimulationControls({
           {seedValue && <StatDisplay label="SEED" value={seedValue} />}
         </div>
 
+        {/* Live Metrics */}
+        {metrics && (
+          <div className="space-y-2 text-xs">
+            <StatDisplay label="GINI" value={metrics.gini_resources.toFixed(2)} />
+            <StatDisplay label="AVG STR" value={metrics.avg_strength.toFixed(1)} />
+            <StatDisplay label="AVG RES" value={metrics.avg_resources.toFixed(1)} />
+            <StatDisplay label="GOV" value={metrics.governance_level.toFixed(2)} />
+          </div>
+        )}
+
         {/* Progress Bar */}
-        <div className="bg-[#0f1419] border border-[#eab308] h-6 overflow-hidden">
+        <div className="relative bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 border-2 border-cyan-500/50 h-10 overflow-hidden rounded-sm shadow-[0_0_15px_rgba(6,182,212,0.3)]">
           <div
-            className="h-full bg-linear-to-r from-[#eab308] to-[#475569]"
+            className="h-full bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 animate-pulse shadow-[0_0_10px_rgba(6,182,212,0.6)]"
             style={{ width: `${progress}%` }}
           />
-          <div className="absolute top-0 left-0 right-0 h-6 flex items-center justify-center text-xs font-bold text-[#0f1419]">
-            {progress.toFixed(0)}%
+          <div className="absolute inset-0 flex items-center justify-center px-3">
+            <span className="text-sm font-bold text-cyan-300 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
+              TURN {currentTurn}{maxTurns ? `/${maxTurns}` : ''}
+            </span>
           </div>
         </div>
 
         {/* Control Buttons */}
-        <div className="space-y-2">
-          <div className="grid grid-cols-2 gap-2">
+        <div className="space-y-3">
+          <div className="grid grid-cols-2 gap-3">
             {onPlay && (
               <GameButton 
                 onClick={onPlay} 
                 disabled={isRunning} 
-                className={`text-sm py-2 font-bold ${isRunning ? 'opacity-50' : 'hover:bg-green-600/20 border-green-500'}`}
+                className={`text-sm py-1 font-bold border-2 transition-all duration-300 rounded-sm ${
+                  isRunning 
+                    ? 'opacity-50 cursor-not-allowed bg-gray-700 border-gray-600 text-gray-400' 
+                    : 'bg-gradient-to-r from-green-500 to-emerald-600 border-green-400 text-white hover:from-green-400 hover:to-emerald-500 hover:border-green-300 hover:shadow-[0_0_15px_rgba(34,197,94,0.4)]'
+                }`}
               >
-                <Play size={16} className="mr-1" />
+                <Play size={18} className="mr-2" />
                 PLAY
               </GameButton>
             )}
@@ -68,30 +96,38 @@ export function SimulationControls({
               <GameButton 
                 onClick={onPause} 
                 disabled={!isRunning} 
-                className={`text-sm py-2 font-bold ${!isRunning ? 'opacity-50' : 'hover:bg-yellow-600/20 border-yellow-500'}`}
+                className={`text-sm py-1 font-bold border-2 transition-all duration-300 rounded-sm ${
+                  !isRunning 
+                    ? 'opacity-50 cursor-not-allowed bg-gray-700 border-gray-600 text-gray-400' 
+                    : 'bg-gradient-to-r from-yellow-500 to-orange-600 border-yellow-400 text-white hover:from-yellow-400 hover:to-orange-500 hover:border-yellow-300 hover:shadow-[0_0_15px_rgba(251,191,36,0.4)]'
+                }`}
               >
-                <Pause size={16} className="mr-1" />
+                <Pause size={18} className="mr-2" />
                 PAUSE
               </GameButton>
             )}
           </div>
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-2 gap-3">
             {onStep && (
               <GameButton 
                 onClick={onStep} 
                 disabled={isRunning} 
-                className={`text-sm py-2 font-bold ${isRunning ? 'opacity-50' : 'hover:bg-blue-600/20 border-blue-500'}`}
+                className={`text-sm py-1 font-bold border-2 transition-all duration-300 rounded-sm ${
+                  isRunning 
+                    ? 'opacity-50 cursor-not-allowed bg-gray-700 border-gray-600 text-gray-400' 
+                    : 'bg-gradient-to-r from-blue-500 to-cyan-600 border-blue-400 text-white hover:from-blue-400 hover:to-cyan-500 hover:border-blue-300 hover:shadow-[0_0_15px_rgba(59,130,246,0.4)]'
+                }`}
               >
-                <SkipForward size={16} className="mr-1" />
+                <SkipForward size={18} className="mr-2" />
                 STEP
               </GameButton>
             )}
             {onReset && (
               <GameButton 
                 onClick={onReset} 
-                className="text-sm py-2 font-bold border-red-500 text-red-400 hover:bg-red-600/20 hover:border-red-400"
+                className="text-sm py-1 font-bold border-2 bg-gradient-to-r from-red-500 to-red-700 border-red-400 text-white hover:from-red-400 hover:to-red-600 hover:border-red-300 hover:shadow-[0_0_15px_rgba(239,68,68,0.4)] transition-all duration-300 rounded-sm"
               >
-                <RotateCcw size={16} className="mr-1" />
+                <RotateCcw size={18} className="mr-2" />
                 RESET
               </GameButton>
             )}
@@ -100,9 +136,23 @@ export function SimulationControls({
 
         {/* Export Button */}
         {onExport && (
-          <GameButton onClick={onExport} className="w-full text-xs py-1">
-            <Download size={14} className="mr-1" />
+          <GameButton 
+            onClick={onExport} 
+            className="w-full text-sm py-1 font-bold border-2 bg-gradient-to-r from-indigo-500 to-purple-600 border-indigo-400 text-white hover:from-indigo-400 hover:to-purple-500 hover:border-indigo-300 hover:shadow-[0_0_15px_rgba(99,102,241,0.4)] transition-all duration-300 rounded-sm"
+          >
+            <Download size={18} className="mr-2" />
             EXPORT
+          </GameButton>
+        )}
+
+        {/* Save Replay Button */}
+        {onSaveReplay && (
+          <GameButton 
+            onClick={onSaveReplay} 
+            className="w-full text-sm py-1 font-bold border-2 bg-gradient-to-r from-purple-500 to-purple-700 border-purple-400 text-white hover:from-purple-400 hover:to-purple-600 hover:border-purple-300 hover:shadow-[0_0_15px_rgba(147,51,234,0.4)] transition-all duration-300 rounded-sm"
+          >
+            <Save size={18} className="mr-2" />
+            SAVE REPLAY
           </GameButton>
         )}
       </div>
