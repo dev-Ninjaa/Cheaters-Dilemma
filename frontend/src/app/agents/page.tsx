@@ -48,7 +48,7 @@ export default function AgentsPage() {
       icon: <Sword className="text-red-400" size={24} />,
       title: "THE WARLORD",
       philosophy: "Hobbesian Trap / Might makes Right",
-      desc: "Views the simulation as a zero-sum conflict. Actively hunts weaker neighbors to eliminate competition and loot resources. Does not fear reputation loss.",
+      desc: "Views the simulation as a zero-sum conflict. Actively hunts weaker neighbors to eliminate competition and loot tokens. Does not fear reputation loss.",
       weakness: "High mortality rate due to constant combat.",
       stats: { str: 9, def: 3, aggro: 10 },
       color: "border-red-600 text-red-400",

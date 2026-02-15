@@ -278,6 +278,23 @@ export default function SimulationPage() {
     dispatch({ type: "RESET" });
   };
 
+  const saveReplay = useCallback(async () => {
+    if (!state.simulationId) {
+      console.error("No simulation ID available for saving replay");
+      return;
+    }
+
+    try {
+      console.log("Saving replay for simulation:", state.simulationId);
+      await apiClient.post(`/api/v1/simulation/${state.simulationId}/save-replay`);
+      console.log("Replay saved successfully");
+      // Could add a toast notification here if desired
+    } catch (error) {
+      console.error("Failed to save replay:", error);
+      // Could add error handling/toast here
+    }
+  }, [state.simulationId]);
+
   const selectedAgent = state.simulationState?.agents.find(a => a.agent_id === state.selectedAgentId) || null;
 
   const maxTurns = state.config.turns || 500;
@@ -307,8 +324,10 @@ export default function SimulationPage() {
             onPlay={playSimulation}
             onPause={pauseSimulation}
             onReset={resetSimulation}
+            onSaveReplay={saveReplay}
             seedValue={state.config.seed}
-            agentCount={state.config.agent_count}
+            agentCount={state.simulationState?.alive_count || state.config.agent_count}
+            metrics={state.simulationState?.metrics}
           />
 
           <SimulationStatusPanel
@@ -399,7 +418,7 @@ export default function SimulationPage() {
                         <span className="text-[#eab308]">{state.simulationState.metrics?.avg_strength?.toFixed(2) || "0.00"}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-[#94a3b8]">AVG RES:</span>
+                        <span className="text-[#94a3b8]">AVG TOK:</span>
                         <span className="text-[#eab308]">{state.simulationState.metrics?.avg_resources?.toFixed(2) || "0.00"}</span>
                       </div>
                       <div className="flex justify-between">
@@ -430,6 +449,7 @@ export default function SimulationPage() {
                 actor: event.actor,
                 target: event.target,
                 message: `${event.action.toUpperCase()}: ${event.actor} -> ${event.target ?? "WORLD"}`,
+                narrative: event.narrative,
                 type: event.outcome.includes("success") ? "success" : "neutral",
               }))}
               live={state.isAutoPlaying || state.isStepping || state.streamStatus === "connecting" || state.streamStatus === "connected"}

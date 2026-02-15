@@ -104,9 +104,9 @@ export default function AgentDetailPage() {
             </div>
           </GamePanel>
 
-          <GamePanel title="RESOURCES & POWER" variant="green">
+          <GamePanel title="TOKENS & POWER" variant="green">
             <div className="space-y-2 text-xs text-slate-300">
-              <StatDisplay label="Resources" value={agent.resources} />
+              <StatDisplay label="Tokens" value={agent.resources} />
               <StatDisplay label="Strength" value={agent.strength} />
               <StatDisplay
                 label="Trust"
@@ -151,7 +151,7 @@ export default function AgentDetailPage() {
                       key={idx}
                       className="flex-1 bg-gradient-to-t from-blue-500 to-yellow-500 opacity-80 hover:opacity-100 rounded-t-sm"
                       style={{ height: `${Math.max(height, 5)}%` }}
-                      title={`Turn ${idx}: ${val} resources`}
+                      title={`Turn ${idx}: ${val} tokens`}
                     />
                   );
                 })}
