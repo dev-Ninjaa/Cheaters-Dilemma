@@ -299,6 +299,7 @@ class World:
                     token_balances=self.token_balances,
                     strength=self.strength,
                     rng=self.rng,
+                    current_turn=turn,
                 )
                 self.reputation.record_steal(actor, int(action.target), bool(result["success"]))
                 status = "success" if result["success"] else "failed"
@@ -355,7 +356,13 @@ class World:
     def run(self) -> dict[str, Any]:
         while self.step():
             pass
-        return self.snapshot()
+        
+        # Execute all recorded token transfers on-chain
+        transfer_results = self.resolver.execute_batch_transfers()
+        
+        snapshot = self.snapshot()
+        snapshot["blockchain_transfers"] = transfer_results
+        return snapshot
 
     def snapshot(self) -> dict[str, Any]:
         leaderboard = sorted(

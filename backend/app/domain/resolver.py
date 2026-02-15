@@ -2,13 +2,29 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from random import Random
+from typing import List, Dict, Any
 
 from ..core.rules import RuleSet
+from app.services.blockchain_service import blockchain_service
+
+
+@dataclass
+class TransferRecord:
+    """Record of a token transfer for batch execution."""
+    from_agent: int
+    to_agent: int
+    amount: int
+    turn: int
 
 
 @dataclass
 class ConflictResolver:
     rules: RuleSet
+    transfer_log: List[TransferRecord] = None
+    
+    def __post_init__(self):
+        if self.transfer_log is None:
+            self.transfer_log = []
 
     def resolve_work(self, actor: int, token_balances: dict[int, int], rng: Random) -> dict[str, object]:
         low, high = self.rules.values.get("work_income", [2, 4])
@@ -31,6 +47,7 @@ class ConflictResolver:
         token_balances: dict[int, int],
         strength: dict[int, int],
         rng: Random,
+        current_turn: int = 0,
     ) -> dict[str, object]:
         if token_balances.get(target, 0) <= 0:
             return {"success": False, "reason": "target_has_no_resources", "amount": 0}
@@ -45,6 +62,13 @@ class ConflictResolver:
         if rng.random() < success_p:
             token_balances[target] -= take
             token_balances[actor] += take
+            # Record transfer for batch execution at simulation end
+            self.transfer_log.append(TransferRecord(
+                from_agent=target,
+                to_agent=actor,
+                amount=take,
+                turn=current_turn
+            ))
             if rng.random() < catch_prob:
                 penalty = min(token_balances[actor], int(self.rules.values.get("steal_catch_penalty", 2)))
                 token_balances[actor] -= penalty
@@ -59,6 +83,42 @@ class ConflictResolver:
         fail_penalty = min(token_balances[actor], int(self.rules.values.get("steal_fail_penalty", 1)))
         token_balances[actor] -= fail_penalty
         return {"success": False, "reason": "failed", "amount": 0, "penalty": fail_penalty}
+
+    def execute_batch_transfers(self) -> Dict[str, Any]:
+        """Execute all recorded transfers on-chain at the end of simulation."""
+        if not self.transfer_log:
+            return {"executed": 0, "failed": 0, "total_transfers": 0}
+        
+        executed = 0
+        failed = 0
+        
+        print(f"🚀 Executing {len(self.transfer_log)} batched token transfers on-chain...")
+        
+        for transfer in self.transfer_log:
+            try:
+                # match blockchain_service.transfer_tokens parameter names
+                success = blockchain_service.transfer_tokens(
+                    from_agent_id=transfer.from_agent,
+                    to_agent_id=transfer.to_agent,
+                    amount=transfer.amount,
+                )
+
+                if success:
+                    executed += 1
+                    print(f"✅ Transfer: Agent {transfer.from_agent} → Agent {transfer.to_agent} ({transfer.amount} DLM)")
+                else:
+                    failed += 1
+                    print(f"❌ Transfer failed: Agent {transfer.from_agent} → Agent {transfer.to_agent}")
+            except Exception as e:
+                failed += 1
+                print(f"❌ Transfer error: {e}")
+        
+        print(f"📊 Batch transfer complete: {executed} successful, {failed} failed")
+        return {
+            "executed": executed,
+            "failed": failed,
+            "total_transfers": len(self.transfer_log)
+        }
 
     def resolve_attack(
         self,

@@ -2,7 +2,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from .api.routes import simulation, agents, rules, replay
+from .api.routes import simulation, agents, rules, replay, wallets
 from .core.config import settings
 
 
@@ -34,6 +34,7 @@ app.include_router(simulation.router, prefix="/api/v1/simulation", tags=["simula
 app.include_router(agents.router, prefix="/api/v1/agents", tags=["agents"])
 app.include_router(rules.router, prefix="/api/v1/rules", tags=["rules"])
 app.include_router(replay.router, prefix="/api/v1/replays", tags=["replays"])
+app.include_router(wallets.router, prefix="/api/v1/wallets", tags=["wallets"])
 
 
 @app.get("/health")
