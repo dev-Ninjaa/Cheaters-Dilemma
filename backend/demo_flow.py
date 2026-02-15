@@ -79,10 +79,10 @@ def run_demo_simulation():
     print("\n💰 TOKEN BALANCE DISTRIBUTION:")
     for agent in result["leaderboard"]:
         status = "alive" if agent["alive"] else "eliminated"
-        print(f"   Agent {agent['agent_id']:>2} ({agent['strategy']:<10}): {agent['token_balance']:>4} tokens ({status})")
+        print(f"   Agent {agent['agent_id']:>2} ({agent['strategy']:<10}): {agent['resources']:>4} tokens ({status})")
     
     # Save results
-    results_file = f"simulation_results_demo_seed42.json"
+    results_file = f"data/simulation_results_demo_seed42.json"
     with open(results_file, 'w') as f:
         json.dump({"result": result, "summary": summary}, f, indent=2)
     
@@ -185,7 +185,7 @@ def main():
     show_demo_summary()
     
     print(f"\n🎯 Final Winner: Agent {summary['metrics']['winner_analysis']['winner_id']} "
-          f"with {result['leaderboard'][0]['token_balance']} tokens")
+          f"with {result['leaderboard'][0]['resources']} tokens")
     print(f"🏆 Winner Strategy: {summary['metrics']['winner_analysis']['winner_strategy']}")
     print(f"📊 Final Gini Coefficient: {summary['metrics']['gini_token_balance']:.5f}")
     print(f"🗳️  Governance Capture: {summary['metrics']['governance_capture']['accepted_rules_by_top2_percent']:.1f}%")

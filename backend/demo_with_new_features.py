@@ -101,7 +101,7 @@ def run_simulation_with_new_features():
     for i, agent in enumerate(leaderboard, 1):
         status = "✅ ALIVE" if agent["alive"] else "💀 ELIMINATED"
         print(f"{i}. Agent {agent['agent_id']} ({agent['strategy']:<10}): "
-              f"{agent['token_balance']:>4} tokens | "
+              f"{agent['resources']:>4} tokens | "
               f"Strength: {agent['strength']:>2} | "
               f"{status}")
     
@@ -115,7 +115,7 @@ def run_simulation_with_new_features():
     print(f"Rules Version: {result['rules_version']}")
     
     # Save results
-    results_file = "simulation_with_new_features_seed42.json"
+    results_file = "data/simulation_with_new_features_seed42.json"
     with open(results_file, 'w') as f:
         json.dump(result, f, indent=2)
     print(f"\n💾 Results saved to: {results_file}")
