@@ -5,11 +5,15 @@ import asyncio
 from fastapi import APIRouter, HTTPException, WebSocket, WebSocketDisconnect
 
 from ...services.simulation_service import SimulationService
+# Removed to break circular import
+# from ...services.event_narrator import EventNarrator
+from ...services.replay_service import ReplayService
 from ..schemas.simulation import (
     SimulationStartRequest,
     SimulationStepRequest,
     SimulationState,
     SimulationEvents,
+    SimulationNarratives,
     SimulationSummary
 )
 
@@ -20,6 +24,7 @@ class SimulationManager:
     """Simple in-memory simulation manager"""
     def __init__(self):
         self.simulations: Dict[str, Dict[str, Any]] = {}
+        self.replay_service = ReplayService()
 
     def create_simulation(self, config: Dict[str, Any]) -> str:
         import uuid
@@ -50,13 +55,32 @@ class SimulationManager:
             raise HTTPException(status_code=400, detail="Simulation is already running")
 
         world = sim["world"]
+        simulation_completed = False
+        
         for _ in range(steps):
             if not world.step():
+                simulation_completed = True
                 break  # Simulation is complete
 
         # Update the result with current snapshot
-        sim["result"] = world.snapshot()
-        return sim["result"]
+        snapshot = world.snapshot()
+        # Add metrics to the snapshot
+        service = SimulationService()
+        snapshot["metrics"] = service._calculate_metrics(snapshot)
+        sim["result"] = snapshot
+        
+        # Save replay if simulation completed
+        if simulation_completed:
+            try:
+                self.replay_service.save_replay(sim_id, snapshot)
+                print(f"Saved replay for completed simulation {sim_id}")
+            except Exception as e:
+                # Log error but don't fail the request
+                print(f"Failed to save replay for {sim_id}: {e}")
+        else:
+            print(f"Simulation {sim_id} not completed yet (alive: {len(snapshot.get('alive', []))}, turns: {snapshot.get('turns_completed', 0)})")
+        
+        return snapshot
 
 
 simulation_manager = SimulationManager()
@@ -77,7 +101,22 @@ async def start_simulation(request: SimulationStartRequest) -> Dict[str, str]:
         })
         return {"simulation_id": sim_id}
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to start simulation: {str(e)}")
+        import traceback
+        error_details = traceback.format_exc()
+        raise HTTPException(status_code=500, detail=f"Failed to start simulation: {str(e)}\n{error_details}")
+
+
+@router.post("/{simulation_id}/save-replay", response_model=Dict[str, str])
+async def save_simulation_replay(simulation_id: str) -> Dict[str, str]:
+    """Save a replay of the current simulation state"""
+    try:
+        sim = simulation_manager.get_simulation(simulation_id)
+        snapshot = sim["result"]
+        
+        replay_id = simulation_manager.replay_service.save_replay(simulation_id, snapshot)
+        return {"replay_id": replay_id, "message": "Replay saved successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to save replay: {str(e)}")
 
 
 @router.post("/{simulation_id}/step", response_model=SimulationState)
@@ -112,7 +151,8 @@ async def get_simulation_state(simulation_id: str) -> SimulationState:
             agents=result.get("leaderboard", []),
             rules=result.get("rules_version", 1),
             alive_count=len(result.get("alive", [])),
-            event_count=result.get("event_count", 0)
+            event_count=result.get("event_count", 0),
+            metrics=result.get("metrics")
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to get simulation state: {str(e)}")
@@ -132,6 +172,11 @@ async def get_simulation_events(
         # Filter events since the specified turn
         filtered_events = [e for e in events if e.get("turn", 0) >= since_turn]
 
+        # Add human-readable narratives to events
+        from ...services.event_narrator import EventNarrator
+        for event in filtered_events:
+            event["narrative"] = EventNarrator.narrate_event(event)
+
         return SimulationEvents(
             simulation_id=simulation_id,
             events=filtered_events,
@@ -139,6 +184,34 @@ async def get_simulation_events(
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to get simulation events: {str(e)}")
+
+
+@router.get("/{simulation_id}/narratives", response_model=SimulationNarratives)
+async def get_simulation_narratives(
+    simulation_id: str,
+    since_turn: int = 0
+) -> SimulationNarratives:
+    """Get human-readable narratives for simulation events since specified turn"""
+    try:
+        sim = simulation_manager.get_simulation(simulation_id)
+        result = sim["result"]
+        events = result.get("events", [])
+
+        # Filter events since the specified turn
+        filtered_events = [e for e in events if e.get("turn", 0) >= since_turn]
+
+        # Generate narratives
+        from ...services.event_narrator import EventNarrator
+        narratives = EventNarrator.narrate_events(filtered_events)
+
+        return SimulationNarratives(
+            simulation_id=simulation_id,
+            narratives=narratives,
+            total_narratives=len(narratives),
+            since_turn=since_turn
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to get simulation narratives: {str(e)}")
 
 
 @router.get("/{simulation_id}/summary", response_model=SimulationSummary)

@@ -15,19 +15,21 @@ class SimulationStepRequest(BaseModel):
 class AgentState(BaseModel):
     agent_id: int
     strategy: str
-    token_balance: int
+    resources: int
     strength: int
     alive: bool
     trust: float
     aggression: float
+    health: int
+    kills: int
 
 
 class Metrics(BaseModel):
     """Economic and governance metrics"""
-    gini_token_balance: float = 0.0  # 0.0 = equal, 1.0 = one agent has all
-    hhi_token_balance: float = 0.0   # Herfindahl-Hirschman Index for concentration
+    gini_resources: float = 0.0  # 0.0 = equal, 1.0 = one agent has all
+    hhi_resources: float = 0.0   # Herfindahl-Hirschman Index for concentration
     avg_strength: float = 0.0
-    avg_token_balance: float = 0.0
+    avg_resources: float = 0.0
     governance_level: float = 0.0  # How much rules are being used
 
 
@@ -49,12 +51,20 @@ class SimulationEvent(BaseModel):
     outcome: str
     rule_justification: str
     details: Dict[str, Any]
+    narrative: Optional[str] = None  # Human-readable description
 
 
 class SimulationEvents(BaseModel):
     simulation_id: str
     events: List[SimulationEvent]
     total_events: int
+
+
+class SimulationNarratives(BaseModel):
+    simulation_id: str
+    narratives: List[str]
+    total_narratives: int
+    since_turn: int = 0
 
 
 class SimulationSummary(BaseModel):
