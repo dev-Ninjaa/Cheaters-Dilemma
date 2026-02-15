@@ -86,7 +86,7 @@ class ActionExecutedEvent(DomainEvent):
             "rule_justification": rule_justification,
             "details": details or {}
         }
-        from ..services.event_narrator import EventNarrator
+        from app.services.event_narrator import EventNarrator
         narrative = EventNarrator.narrate_event(event_for_narration)
 
         super().__init__(
@@ -222,7 +222,7 @@ class EventLogger:
                 "rule_justification": getattr(event, 'rule_justification', event.data.get('rule_justification', '')),
                 "details": event.data.get('details', event.data)
             }
-            from ..services.event_narrator import EventNarrator
+            from app.services.event_narrator import EventNarrator
             narrative = EventNarrator.narrate_event(event_data)
 
         self.logger.info(

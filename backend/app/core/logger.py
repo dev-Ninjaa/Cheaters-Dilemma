@@ -39,7 +39,7 @@ class EventLogger:
             "details": details or {},
         }
         # Add human-readable narrative
-        from ..services.event_narrator import EventNarrator
+        from app.services.event_narrator import EventNarrator
         entry["narrative"] = EventNarrator.narrate_event(entry)
         self.events.append(entry)
 
