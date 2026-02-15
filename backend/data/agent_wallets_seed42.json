@@ -1,0 +1,70 @@
+{
+  "seed": 42,
+  "simulation_hash": "0x8419da9ba8f0f48f431192a2c09fe3f0fb47ca62a1722247e66890d4cab3c901",
+  "wallets": [
+    {
+      "agent_id": 2,
+      "strategy": "politician",
+      "address": "0xcfd38BE191027B4070EB246CdF88a5F0932B076a",
+      "private_key": "0854dec313497bcb3ad9d4c815f3d7a0cfd023831c3afcf8a3f0616ec61ccee1",
+      "balance": 249,
+      "alive": true
+    },
+    {
+      "agent_id": 6,
+      "strategy": "politician",
+      "address": "0x0690Dd086F8eeafa5DFDf52958637E6cD8437C20",
+      "private_key": "d40c5e936b80632363f05b64c9c634eb6d699376390eefb0305e15a9941f013e",
+      "balance": 246,
+      "alive": true
+    },
+    {
+      "agent_id": 4,
+      "strategy": "greedy",
+      "address": "0x91BEe64De54e3f49EA071905d70FD394E89Fdbff",
+      "private_key": "f5178800ed66ea645e805c5e5913c07a07494ac052af677f7b7376114ec149f4",
+      "balance": 244,
+      "alive": true
+    },
+    {
+      "agent_id": 7,
+      "strategy": "warlord",
+      "address": "0xE5B7518e7CF0E26550A3b85605270581A71FF775",
+      "private_key": "179de2d26fd744f2244fd676e32a0dee330154268acad423f7f16d4a7e67d2e4",
+      "balance": 224,
+      "alive": true
+    },
+    {
+      "agent_id": 1,
+      "strategy": "cheater",
+      "address": "0x8872ecA8Dbba493724C033136A785109C4f556aD",
+      "private_key": "fa6dac14985de2b071e2053325be92455a3059851e2b9438e988fdae998a5bbc",
+      "balance": 191,
+      "alive": true
+    },
+    {
+      "agent_id": 3,
+      "strategy": "warlord",
+      "address": "0xAbF2C76581C162e07998e05BDF7daccF9D469CD3",
+      "private_key": "42aa0480d2ce80f2a4d5a336a1310804f0fc7a2024796b8ca4e7aedae3e0a466",
+      "balance": 176,
+      "alive": true
+    },
+    {
+      "agent_id": 0,
+      "strategy": "greedy",
+      "address": "0xaF2E248E8A8B5C45a727289b42475B3277d62295",
+      "private_key": "8af3f1e2d92e13ffd39a18443720e5e12484b770337ad0a4d83ed459dbb82fa0",
+      "balance": 43,
+      "alive": false
+    },
+    {
+      "agent_id": 5,
+      "strategy": "cheater",
+      "address": "0x21f3BEB303A0FE2EE17af3c7c414f8889a940831",
+      "private_key": "ed2c223835cf0dcc2555595a7b3d0c175c4b28f954bca334c73b7b3e20fefbc9",
+      "balance": 13,
+      "alive": true
+    }
+  ]
+}
