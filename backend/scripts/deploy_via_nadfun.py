@@ -13,6 +13,7 @@ References:
 
 import json
 import sys
+import os
 import requests
 from pathlib import Path
 from typing import Dict
@@ -36,7 +37,7 @@ def load_simulation_results(filepath: str) -> Dict:
     return data
 
 
-def create_token_via_nadfun(simulation_result: Dict, use_testnet: bool = True):
+def create_token_via_nadfun(simulation_result: Dict, use_testnet: bool = False):
     """
     Create DILEMMA token via NAD.fun platform.
     
@@ -56,7 +57,7 @@ def create_token_via_nadfun(simulation_result: Dict, use_testnet: bool = True):
     # Extract token information
     seed = simulation_result.get("seed", 42)
     leaderboard = simulation_result.get("leaderboard", [])
-    total_supply = sum(agent["token_balance"] for agent in leaderboard)
+    total_supply = sum(agent["resources"] for agent in leaderboard)
     winner = leaderboard[0] if leaderboard else None
     
     print(f"\n📊 Token Details:")
@@ -64,7 +65,7 @@ def create_token_via_nadfun(simulation_result: Dict, use_testnet: bool = True):
     print(f"   Symbol: DLM")
     print(f"   Total Supply: {total_supply}")
     print(f"   Agents: {len(leaderboard)}")
-    print(f"   Winner: Agent {winner['agent_id']} ({winner['strategy']}) - {winner['token_balance']} tokens")
+    print(f"   Winner: Agent {winner['agent_id']} ({winner['strategy']}) - {winner['resources']} tokens")
     
     # Token metadata
     token_metadata = {
@@ -100,8 +101,8 @@ def create_token_via_nadfun(simulation_result: Dict, use_testnet: bool = True):
     print(f"\n📊 Distribution Plan:")
     print(f"   After token creation, distribute to agents:")
     for i, agent in enumerate(leaderboard[:5], 1):
-        percentage = (agent["token_balance"] / total_supply) * 100
-        print(f"   {i}. Agent {agent['agent_id']} ({agent['strategy']}): {agent['token_balance']} DLM ({percentage:.1f}%)")
+        percentage = (agent["resources"] / total_supply) * 100
+        print(f"   {i}. Agent {agent['agent_id']} ({agent['strategy']}): {agent['resources']} DLM ({percentage:.1f}%)")
     
     if len(leaderboard) > 5:
         print(f"   ... and {len(leaderboard) - 5} more agents")
@@ -111,7 +112,7 @@ def create_token_via_nadfun(simulation_result: Dict, use_testnet: bool = True):
     print("="*60)
     
     # Save token metadata
-    metadata_file = f"dilemma_token_metadata_seed{seed}.json"
+    metadata_file = f"data/dilemma_token_metadata_seed{seed}.json"
     with open(metadata_file, 'w') as f:
         json.dump(token_metadata, f, indent=2)
     print(f"\n💾 Token metadata saved to: {metadata_file}")
@@ -119,23 +120,30 @@ def create_token_via_nadfun(simulation_result: Dict, use_testnet: bool = True):
 
 def main():
     """Main function."""
-    if len(sys.argv) < 2:
-        print("Usage: python scripts/deploy_via_nadfun.py <simulation_results.json>")
-        print("\nExample:")
-        print("  python scripts/deploy_via_nadfun.py simulation_results_demo_seed42.json")
-        sys.exit(1)
-    
-    results_file = sys.argv[1]
-    
+    import argparse
+
+    parser = argparse.ArgumentParser(description='Generate NAD.fun token creation instructions')
+    parser.add_argument('simulation_file', help='Path to simulation results JSON file')
+    parser.add_argument('--testnet', action='store_true', help='Generate instructions for testnet')
+    parser.add_argument('--mainnet', action='store_true', help='Generate instructions for mainnet (default)')
+
+    args = parser.parse_args()
+
+    # Determine network (testnet takes precedence if both specified)
+    use_testnet = args.testnet or (not args.mainnet and os.getenv('USE_TESTNET', 'false').lower() == 'true')
+
+    results_file = args.simulation_file
+
     try:
         print("\n🔍 Loading simulation results...")
         simulation_result = load_simulation_results(results_file)
-        
+
         print("✅ Simulation results loaded")
-        
+        print(f"🌐 Target Network: {'Testnet' if use_testnet else 'Mainnet'}")
+
         # Create token via NAD.fun
-        create_token_via_nadfun(simulation_result, use_testnet=True)
-        
+        create_token_via_nadfun(simulation_result, use_testnet=use_testnet)
+
     except Exception as e:
         print(f"\n❌ Error: {e}")
         import traceback

@@ -78,8 +78,8 @@ def main() -> None:
 
     if args.export_json:
         out_path = (
-            ROOT
-            / f"simulation_seed{args.seed}_agents{args.agents}_turns{result.get('turns_completed', args.turns)}.json"
+            PARENT
+            / f"data/simulation_seed{args.seed}_agents{args.agents}_turns{result.get('turns_completed', args.turns)}.json"
         )
         payload = {
             "result": result,

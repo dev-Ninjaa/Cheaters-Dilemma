@@ -247,7 +247,7 @@ def main():
         
         for agent_data in leaderboard:
             agent_id = agent_data["agent_id"]
-            balance = agent_data["token_balance"]
+            balance = agent_data["resources"]
             
             # Generate wallet
             address, private_key = WalletGenerator.generate_agent_wallet(agent_id, seed)
@@ -272,7 +272,7 @@ def main():
         print(f"\n💰 Total Supply: {total_supply} DLM")
         
         # Save wallet information
-        wallet_file = f"agent_wallets_seed{seed}.json"
+        wallet_file = f"data/agent_wallets_seed{seed}.json"
         with open(wallet_file, 'w') as f:
             json.dump({
                 "seed": seed,
