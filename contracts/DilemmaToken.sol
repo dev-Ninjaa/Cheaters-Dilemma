@@ -77,8 +77,8 @@ contract DilemmaToken is ERC20 {
             agentWallets[agentId] = recipient;
             walletToAgent[recipient] = agentId;
             
-            // Mint tokens
-            _mint(recipient, balance);
+            // Mint tokens (convert token amount to wei)
+            _mint(recipient, balance * 10**decimals());
             
             emit AgentTokensMinted(agentId, recipient, balance);
         }
