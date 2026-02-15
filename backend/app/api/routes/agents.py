@@ -30,6 +30,36 @@ async def get_agents(simulation_id: str) -> List[AgentSummary]:
             trust=0.3,
             aggression=0.8,
             rank=2
+        ),
+        AgentSummary(
+            agent_id=2,
+            strategy="warlord",
+            resources=28,
+            strength=9,
+            alive=True,
+            trust=0.1,
+            aggression=0.9,
+            rank=3
+        ),
+        AgentSummary(
+            agent_id=3,
+            strategy="politician",
+            resources=22,
+            strength=5,
+            alive=True,
+            trust=0.6,
+            aggression=0.4,
+            rank=4
+        ),
+        AgentSummary(
+            agent_id=4,
+            strategy="probabilistic",
+            resources=18,
+            strength=7,
+            alive=True,
+            trust=0.5,
+            aggression=0.6,
+            rank=5
         )
     ]
 

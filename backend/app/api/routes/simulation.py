@@ -1,13 +1,14 @@
 from datetime import datetime, timezone
 from typing import Any, Dict
 import asyncio
+import time
 
 from fastapi import APIRouter, HTTPException, WebSocket, WebSocketDisconnect
 
-from ...services.simulation_service import SimulationService
+from app.services.simulation_service import SimulationService
 # Removed to break circular import
-# from ...services.event_narrator import EventNarrator
-from ...services.replay_service import ReplayService
+# from app.services.event_narrator import EventNarrator
+from app.services.replay_service import ReplayService
 from ..schemas.simulation import (
     SimulationStartRequest,
     SimulationStepRequest,
@@ -29,19 +30,31 @@ class SimulationManager:
     def create_simulation(self, config: Dict[str, Any]) -> str:
         import uuid
         sim_id = str(uuid.uuid4())
+
+        # Instrumentation: measure how long world creation / snapshot take
+        start_ts = time.perf_counter()
         service = SimulationService()
+
+        t0 = time.perf_counter()
         world = service.create_world(
             agent_count=config["agent_count"],
             seed=config["seed"],
             turns=config.get("turns")
         )
+        t1 = time.perf_counter()
         initial_result = world.snapshot()
+        t2 = time.perf_counter()
+
         self.simulations[sim_id] = {
             "world": world,
             "result": initial_result,
             "current_turn": 0,
             "is_running": False
         }
+
+        total_ms = (time.perf_counter() - start_ts) * 1000.0
+        print(f"[sim-start] created sim_id={sim_id} — create_world: {(t1-t0)*1000:.1f}ms, snapshot: {(t2-t1)*1000:.1f}ms, total: {total_ms:.1f}ms")
+
         return sim_id
 
     def get_simulation(self, sim_id: str) -> Dict[str, Any]:
@@ -173,7 +186,7 @@ async def get_simulation_events(
         filtered_events = [e for e in events if e.get("turn", 0) >= since_turn]
 
         # Add human-readable narratives to events
-        from ...services.event_narrator import EventNarrator
+        from app.services.event_narrator import EventNarrator
         for event in filtered_events:
             event["narrative"] = EventNarrator.narrate_event(event)
 
@@ -201,7 +214,7 @@ async def get_simulation_narratives(
         filtered_events = [e for e in events if e.get("turn", 0) >= since_turn]
 
         # Generate narratives
-        from ...services.event_narrator import EventNarrator
+        from app.services.event_narrator import EventNarrator
         narratives = EventNarrator.narrate_events(filtered_events)
 
         return SimulationNarratives(
@@ -227,7 +240,8 @@ async def get_simulation_summary(simulation_id: str) -> SimulationSummary:
             leaderboard=result.get("leaderboard", []),
             action_counts=result.get("action_counts", {}),
             log_digest=result.get("log_digest", ""),
-            rules_version=result.get("rules_version", 1)
+            rules_version=result.get("rules_version", 1),
+            blockchain_transfers=result.get("blockchain_transfers")
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to get simulation summary: {str(e)}")

@@ -67,6 +67,12 @@ class SimulationNarratives(BaseModel):
     since_turn: int = 0
 
 
+class BlockchainTransferSummary(BaseModel):
+    executed: int = 0
+    failed: int = 0
+    total_transfers: int = 0
+
+
 class SimulationSummary(BaseModel):
     simulation_id: str
     seed: int
@@ -75,3 +81,4 @@ class SimulationSummary(BaseModel):
     action_counts: Dict[str, int]
     log_digest: str
     rules_version: int
+    blockchain_transfers: Optional[BlockchainTransferSummary] = None

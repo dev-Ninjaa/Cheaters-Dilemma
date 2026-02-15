@@ -14,7 +14,7 @@ router = APIRouter()
 async def get_replays() -> List[ReplaySummary]:
     """Get list of completed simulations"""
     try:
-        from ..services.replay_service import ReplayService
+        from app.services.replay_service import ReplayService
         replay_service = ReplayService()
         replays = replay_service.list_replays()
         return [ReplaySummary(**replay) for replay in replays]
@@ -26,7 +26,7 @@ async def get_replays() -> List[ReplaySummary]:
 async def get_replay_detail(replay_id: str) -> ReplayDetail:
     """Get detailed replay data for playback"""
     try:
-        from ..services.replay_service import ReplayService
+        from app.services.replay_service import ReplayService
         replay_service = ReplayService()
         replay_data = replay_service.load_replay(replay_id)
         if not replay_data:
